@@ -27,6 +27,9 @@ class IndexeurForm(BaseCollecteForm):
 class IndexationControlForm(BaseCollecteForm):
     pass
 
+class PriseVueForm(BaseCollecteForm):
+    pass
+
 DOMAINE_CHOICES = [
     ('Individu - Culture - Société', 'Individu - Culture - Société'),
     ('Droit - Politique', 'Droit - Politique'),

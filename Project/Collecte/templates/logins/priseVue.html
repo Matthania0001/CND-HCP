@@ -25,9 +25,9 @@
         </button>
     </div>
 
-    {% if form_indexeur %}
+    {% if form_priseVue %}
         <div id="form-container" class="login-container">
-            <h3> Connexion à Indexeur </h3>
+            <h3> Connexion à Prise de Vue </h3>
             
             {% if messages %}
             <div class="alert alert-danger">
@@ -39,7 +39,7 @@
             
             <form method="post">
             {% csrf_token %}
-            {% for f in form_indexeur %}
+            {% for f in form_priseVue %}
             <div class="form-group" style="position:relative;">
                 {{ f.label_tag }}
                 {{ f }}

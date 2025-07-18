@@ -14,7 +14,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.db import connection
 from django.views import View
-from .forms import PeriodiqueForm, MonographieForm, IndexeurForm, IndexationControlForm
+from .forms import PeriodiqueForm, MonographieForm, IndexeurForm, IndexationControlForm, PriseVueForm
 
 class PeriodiqueAuthView(View):
     template_name = 'logins/periodique.html'
@@ -198,7 +198,7 @@ class IndexationControlAuthView(View):
             
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT 1 FROM admin WHERE login = %s AND pass = %s AND destination = 'suivi'",
+                    "SELECT 1 FROM admin WHERE login = %s AND pass = %s AND destination = 'indexation'",
                     [username, password]
                 )
                 if cursor.fetchone():
@@ -233,3 +233,58 @@ class IndexationControlProtectedView(View):
 def indexationControl_logout(request):
     request.session.flush()
     return redirect('indexationControl_login')
+
+
+# Partie Prise de Vue
+class PriseVueAuthView(View):
+    template_name = 'logins/priseVue.html'
+    form_class = PriseVueForm
+
+    def get(self, request):
+        form_priseVue = self.form_class()
+        return render(request, self.template_name, {'form_priseVue': form_priseVue})
+
+    def post(self, request):
+        form_priseVue = self.form_class(request.POST)
+        
+        if form_priseVue.is_valid():
+            username = form_priseVue.cleaned_data['username']
+            password = form_priseVue.cleaned_data['password']
+            
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT 1 FROM admin WHERE login = %s AND pass = %s AND destination = 'vue'",
+                    [username, password]
+                )
+                if cursor.fetchone():
+                    # Créer un token unique à chaque connexion
+                    request.session['indexationControl_auth_token'] = f"token_{username}_{request.session.session_key}"
+                    return redirect('indexationControl_protected')
+                else:
+                    messages.error(request, "Saisie incorrecte ou module non autorisé.")
+        
+        return render(request, self.template_name, {'form_indexationControl': form_priseVue})
+
+
+class PriseVueProtectedView(View):
+    template_name = 'indexationControl.html'
+    
+    def dispatch(self, request, *args, **kwargs):
+        # Vérification stricte + suppression immédiate de l'authentification
+        if not request.session.get('priseVue_auth_token'):
+            return redirect('priseVue_login')
+        
+        # Supprimer le token immédiatement après vérification
+        token = request.session.pop('priseVue_auth_token', None)
+        if not token:
+            return redirect('priseVue_login')
+            
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get(self, request):
+        return render(request, self.template_name)
+
+
+def priseVue_logout(request):
+    request.session.flush()
+    return redirect('priseVue_login')
