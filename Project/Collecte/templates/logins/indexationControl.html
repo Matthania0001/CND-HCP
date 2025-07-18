@@ -25,9 +25,9 @@
         </button>
     </div>
 
-    {% if form_periodique %}
+    {% if form_indexationControl %}
         <div id="form-container" class="login-container">
-            <h3> Connexion à Périodique </h3>
+            <h3> Connexion à Indexation et Controle </h3>
             
             {% if messages %}
             <div class="alert alert-danger">
@@ -39,7 +39,7 @@
             
             <form method="post">
             {% csrf_token %}
-            {% for f in form_periodique %}
+            {% for f in form_indexationControl %}
             <div class="form-group" style="position:relative;">
                 {{ f.label_tag }}
                 {{ f }}

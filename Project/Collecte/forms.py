@@ -18,6 +18,14 @@ class BaseCollecteForm(forms.Form):
 class PeriodiqueForm(BaseCollecteForm):
     pass
 
+class MonographieForm(BaseCollecteForm):
+    pass
+
+class IndexeurForm(BaseCollecteForm):
+    pass
+
+class IndexationControlForm(BaseCollecteForm):
+    pass
 
 DOMAINE_CHOICES = [
     ('Individu - Culture - Société', 'Individu - Culture - Société'),
