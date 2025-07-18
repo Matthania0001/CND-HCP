@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COLLECTE</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style1.css' %}">
+    {% block css %}{% endblock %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+<body>
+    <div class="container">
+        {% include 'includes/header.html' %}
+
+        {% block content %}
+        <!-- Le contenu des pages enfants apparaîtra ici -->
+        {% endblock %}
+
+        {% include 'includes/footer.html' %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/accueil/accueil.css' %}">
+{% endblock %}
+<div class="intro-collecte">
+  <h1><i class="fas fa-database"></i> La Base de Données Collecte du CND</h1>
+  <p>
+    Le CND collecte via un **dépôt obligatoire** les documents inédits, littérature grise et publications d’institutions publiques (totale ou partiellement financées par l’État).
+    Il acquiert également des documents du secteur privé ou étrangers, par achat ou échange.
+  </p>
+  <p>
+    Pour identifier les sources productrices et garantir une exhaus­tivité, une campagne de sensibilisation est menée périodiquement. Cela permet d’accroître et diversifier les documents collectés.
+  </p>
+  <p>
+    Cette base de données permet de <strong>gérer efficacement</strong> l’opération de collecte et de suivre le traitement de chaque document reçu dans le cadre du dépôt obligatoire.
+  </p>
+</div>
+{% endblock %}

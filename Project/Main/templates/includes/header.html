@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Votre Application</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'css/main/header.css' %}">
+</head>
+<body>
+  <header class="header">
+    <img src="{% static 'images/main/cnd.gif' %}" alt="Logo" class="logo">
+    <div class="nav-buttons">
+      <button type="button" onclick="window.location.href='{% url 'accueil' %}'">
+        <i class="fas fa-home"></i> Accueil
+      </button>
+      <button type="button" onclick="window.location.href='{% url 'collecte' %}'">
+        <i class="fas fa-clipboard-list"></i> Collecte
+      </button>
+      <button type="button" onclick="window.location.href='{% url 'accueil' %}'">
+        <i class="fas fa-tasks"></i> Gestion
+      </button>
+      <button type="button" onclick="window.location.href='{% url 'accueil' %}'">
+        <i class="fas fa-chart-pie"></i> Bilan
+      </button>
+      <button type="button" onclick="window.location.href='{% url 'accueil' %}'">
+        <i class="fas fa-tachometer-alt"></i> Rendement
+      </button>
+      <button type="button" onclick="window.location.href='{% url 'accueil' %}'">
+        <i class="fas fa-chart-line"></i> Statistiques
+      </button>
+      <button type="button" onclick="window.location.href='{% url 'accueil' %}'">
+        <i class="fas fa-search"></i> Recherche
+      </button>
+    </div>
+  </header>
+  <script src="{% static 'js/header.js' %}"></script>
+</body>
+</html>
