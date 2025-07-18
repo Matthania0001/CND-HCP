@@ -1,1 +1,3 @@
 Project/Project/settings.py
+__pycache__/
+*.pyc
