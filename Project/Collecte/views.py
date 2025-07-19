@@ -14,7 +14,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.db import connection
 from django.views import View
-from .forms import PeriodiqueForm, MonographieForm, IndexeurForm, IndexationControlForm, PriseVueForm
+from .forms import PeriodiqueForm, MonographieForm, IndexeurForm, IndexationControlForm, PriseVueForm, SearchForm
 
 class PeriodiqueAuthView(View):
     template_name = 'logins/periodique.html'
@@ -45,29 +45,51 @@ class PeriodiqueAuthView(View):
         
         return render(request, self.template_name, {'form_periodique': form_periodique})
 
+from django.views.generic.base import TemplateView
+# class PeriodiqueProtectedView(View):
+#     template_name = 'periodique.html'
+#     def dispatch(self, request, *args, **kwargs):
+#         # Vérification stricte + suppression immédiate de l'authentification
+#         if not request.session.get('periodique_auth_token'):
+#             return redirect('periodique_login')
+        
+#         # Supprimer le token immédiatement après vérification
+#         token = request.session.pop('periodique_auth_token', None)
+#         if not token:
+#             return redirect('periodique_login')
+            
+#         return super().dispatch(request, *args, **kwargs)
+#     def get(self, request):
+#         formSearch = SearchForm(request.GET or None)
+#         return render(request, self.template_name, {'formSearch': formSearch})
+
+from django.shortcuts import render, redirect
+from django.views import View
+from .forms import SearchForm
 
 class PeriodiqueProtectedView(View):
     template_name = 'periodique.html'
-    
+
     def dispatch(self, request, *args, **kwargs):
-        # Vérification stricte + suppression immédiate de l'authentification
+        # Vérification stricte + suppression du token
         if not request.session.get('periodique_auth_token'):
             return redirect('periodique_login')
-        
-        # Supprimer le token immédiatement après vérification
+
         token = request.session.pop('periodique_auth_token', None)
         if not token:
             return redirect('periodique_login')
-            
+
         return super().dispatch(request, *args, **kwargs)
-    
+
     def get(self, request):
-        return render(request, self.template_name)
+        # Initialisation du formulaire avec GET existant (auto remplit)
+        formSearch = SearchForm(request.GET or None)
+        return render(request, self.template_name, {'formSearch': formSearch})
 
 
 def periodique_logout(request):
     request.session.flush()
-    return redirect('periodiaque_login')
+    return redirect('periodique_login')
 
 
 # Partie Monographie
@@ -258,16 +280,16 @@ class PriseVueAuthView(View):
                 )
                 if cursor.fetchone():
                     # Créer un token unique à chaque connexion
-                    request.session['indexationControl_auth_token'] = f"token_{username}_{request.session.session_key}"
-                    return redirect('indexationControl_protected')
+                    request.session['priseVue_auth_token'] = f"token_{username}_{request.session.session_key}"
+                    return redirect('priseVue_protected')
                 else:
                     messages.error(request, "Saisie incorrecte ou module non autorisé.")
         
-        return render(request, self.template_name, {'form_indexationControl': form_priseVue})
+        return render(request, self.template_name, {'form_priseVue': form_priseVue})
 
 
 class PriseVueProtectedView(View):
-    template_name = 'indexationControl.html'
+    template_name = 'priseVue.html'
     
     def dispatch(self, request, *args, **kwargs):
         # Vérification stricte + suppression immédiate de l'authentification
@@ -288,3 +310,219 @@ class PriseVueProtectedView(View):
 def priseVue_logout(request):
     request.session.flush()
     return redirect('priseVue_login')
+
+
+
+
+from django.shortcuts import render, redirect
+from .forms import SearchForm
+
+from django.shortcuts import render
+from django.db.models import Q
+from Main.models import Doc, Fournit, Edition, Ecriture  # Importez vos modèles existants
+
+from django.shortcuts import render
+from django.db import connection
+
+# def resultatSearch(request):
+#     if request.method == 'GET' and 'titre' in request.GET:
+#         terme_recherche = request.GET['titre'].strip()
+#         termes = terme_recherche.lower().split()
+        
+#         # Construction de la partie WHERE avec tous les termes
+#         where_parts = []
+#         params = []
+#         for terme in termes:
+#             where_parts.append("((LOWER(d.titre) LIKE %s) OR (LOWER(d.titre_article) LIKE %s))")
+#             params.extend([f"%{terme}%", f"%{terme}%"])
+        
+#         where_query = " AND ".join([f"({part}" for part in where_parts])
+        
+#         # Requête SQL complète avec jointures
+#         query = f"""
+#             SELECT 
+#                 d.*,
+#                 f.source,
+#                 e.vol, e.tom, e.num, e.date_edition, e.pages, e.ville_edition, e.editeur,
+#                 GROUP_CONCAT(a.auteur SEPARATOR ' & ') as auteurs
+#             FROM 
+#                 doc d
+#                 INNER JOIN fournit f ON d.n_enregistrement = f.n_enregistrement
+#                 INNER JOIN edition e ON d.n_enregistrement = e.n_enregistrement
+#                 INNER JOIN ecriture a ON d.n_enregistrement = a.n_enregistrement
+#             WHERE 
+#                 {where_query}
+#             GROUP BY 
+#                 d.n_enregistrement
+#             ORDER BY
+#                 d.titre
+#         """
+        
+#         # Exécution de la requête
+#         with connection.cursor() as cursor:
+#             cursor.execute(query, params)
+#             columns = [col[0] for col in cursor.description]
+#             documents = [dict(zip(columns, row)) for row in cursor.fetchall()]
+        
+#         # Préparation des résultats pour le template
+#         for doc in documents:
+#             doc['est_periodique'] = doc['periodicite'] == 'p'
+        
+#         return render(request, 'search.html', {
+#             'documents': documents,
+#             'terme_recherche': terme_recherche
+#         })
+    
+#     return render(request, 'search.html')
+
+from django.shortcuts import render
+from django.db import connection
+
+# def resultatSearch(request):
+#     documents = []
+#     terme_recherche = ''
+
+#     if request.method == 'GET' and 'q' in request.GET:
+#         terme_recherche = request.GET['q'].strip()
+#         termes = terme_recherche.lower().split()
+
+#         where_parts = []
+#         params = []
+#         for terme in termes:
+#             where_parts.append("((LOWER(d.titre) LIKE %s) OR (LOWER(d.titre_article) LIKE %s))")
+#             params.extend([f"%{terme}%", f"%{terme}%"])
+
+#         where_query = " AND ".join([f"({part}" for part in where_parts])
+
+#         query = f"""
+#             SELECT 
+#                 d.*,
+#                 f.source,
+#                 e.vol, e.tom, e.num, e.date_edition, e.pages, e.ville_edition, e.editeur,
+#                 GROUP_CONCAT(a.auteur SEPARATOR ' & ') as auteurs
+#             FROM 
+#                 doc d
+#                 INNER JOIN fournit f ON d.n_enregistrement = f.n_enregistrement
+#                 INNER JOIN edition e ON d.n_enregistrement = e.n_enregistrement
+#                 INNER JOIN ecriture a ON d.n_enregistrement = a.n_enregistrement
+#             WHERE 
+#                 {where_query}
+#             GROUP BY 
+#                 d.n_enregistrement
+#             ORDER BY
+#                 d.titre
+#         """
+
+#         with connection.cursor() as cursor:
+#             cursor.execute(query, params)
+#             columns = [col[0] for col in cursor.description]
+#             documents = [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+#         for doc in documents:
+#             doc['est_periodique'] = doc.get('periodicite') == 'p'
+
+#     return render(request, 'search.html', {
+#         'documents': documents,
+#         'terme_recherche': terme_recherche,
+#     })
+
+# def resultatSearch(request):
+#     documents = []
+#     terme_recherche = ''
+
+#     if request.method == 'GET' and 'q' in request.GET:
+#         terme_recherche = request.GET['q'].strip()
+#         termes = terme_recherche.lower().split()
+
+#         where_parts = []
+#         params = []
+#         for terme in termes:
+#             where_parts.append("((LOWER(d.titre) LIKE %s) OR (LOWER(d.titre_article) LIKE %s))")
+#             params.extend([f"%{terme}%", f"%{terme}%"])
+
+#         # Fermeture correcte des parenthèses
+#         where_query = " AND ".join([f"({part})" for part in where_parts])
+
+#         query = f"""
+#             SELECT 
+#                 d.*,
+#                 f.source,
+#                 d.vol, d.tom, d.num, e.date_edition, d.pages, e.ville_edition, e.editeur,
+#                 GROUP_CONCAT(a.auteur SEPARATOR ' & ') as auteurs
+#             FROM 
+#                 doc d
+#                 INNER JOIN fournit f ON d.n_enregistrement = f.n_enregistrement
+#                 INNER JOIN edition e ON d.n_enregistrement = e.n_enregistrement
+#                 INNER JOIN ecriture a ON d.n_enregistrement = a.n_enregistrement
+#             WHERE 
+#                 {where_query}
+#             GROUP BY 
+#                 d.n_enregistrement
+#             ORDER BY
+#                 d.titre
+#         """
+
+#         with connection.cursor() as cursor:
+#             cursor.execute(query, params)
+#             columns = [col[0] for col in cursor.description]
+#             documents = [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+#         for doc in documents:
+#             doc['est_periodique'] = doc.get('periodicite') == 'p'
+
+#     return render(request, 'search.html', {
+#         'documents': documents,
+#         'terme_recherche': terme_recherche,
+#     })
+
+def resultatSearch(request):
+    documents = []
+    terme_recherche = ''
+    formSearch = SearchForm(request.GET or None)
+    if request.method == 'GET' and 'q' in request.GET:
+        terme_recherche = request.GET['q'].strip()
+        termes = terme_recherche.lower().split()
+
+        where_parts = []
+        params = []
+        for terme in termes:
+            where_parts.append("((LOWER(d.titre) LIKE %s) OR (LOWER(d.titre_article) LIKE %s))")
+            params.extend([f"%{terme}%", f"%{terme}%"])
+
+        # Ici on utilise OR entre chaque condition (au moins un mot doit être présent)
+        where_query = " OR ".join([f"({part})" for part in where_parts]) if where_parts else "1=1"
+
+        query = f"""
+            SELECT 
+                d.*,
+                f.source,
+                d.vol, d.tom, d.num, e.date_edition, d.pages, e.ville_edition, e.editeur,
+                GROUP_CONCAT(a.auteur SEPARATOR ' & ') as auteurs
+            FROM 
+                doc d
+                INNER JOIN fournit f ON d.n_enregistrement = f.n_enregistrement
+                INNER JOIN edition e ON d.n_enregistrement = e.n_enregistrement
+                INNER JOIN ecriture a ON d.n_enregistrement = a.n_enregistrement
+            WHERE 
+                {where_query}
+            GROUP BY 
+                d.n_enregistrement
+            ORDER BY
+                d.titre
+        """
+
+        with connection.cursor() as cursor:
+            cursor.execute(query, params)
+            columns = [col[0] for col in cursor.description]
+            documents = [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+        for doc in documents:
+            doc['est_periodique'] = doc.get('periodicite') == 'p'
+
+    return render(request, 'search.html', {
+        'documents': documents,
+        'terme_recherche': terme_recherche,
+        'formSearch': formSearch,
+    })
+
+

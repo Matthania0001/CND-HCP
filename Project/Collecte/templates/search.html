@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+  {% block css %}
+    <link rel="stylesheet" href="{% static 'css/collecte/collecte.css' %}">
+    <link rel="stylesheet" href="{% static 'css/search.css' %}">
+    <link rel="stylesheet" href="{% static 'css/card.css' %}">
+    <style>
+      .doc-info-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 12px;
+        font-size: 14px;
+        color: inherit;
+      }
+
+      .doc-info-table tbody tr:nth-child(odd) {
+        background-color: rgba(255, 255, 255, 0.15);
+      }
+
+      .doc-info-table tbody tr:nth-child(even) {
+        background-color: rgba(255, 255, 255, 0.07);
+      }
+
+      .doc-info-table td {
+        padding: 8px 10px;
+        vertical-align: middle;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+      }
+
+      .doc-info-table td.label {
+        text-align: left;
+        font-weight: 600;
+        width: 45%;
+      }
+
+      .doc-info-table td.value {
+        text-align: right;
+        width: 55%;
+        word-break: break-word;
+      }
+
+      /* Position bouton en haut à droite */
+      .document-card {
+        position: relative;
+        padding-top: 40px; /* laisser de la place en haut pour le bouton */
+      }
+
+      .periodic-label {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: #007bff; /* bleu bootstrap */
+        color: white;
+        font-weight: 600;
+        font-size: 0.8rem;
+        padding: 4px 10px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: default;
+        user-select: none;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      }
+
+      .periodic-label i {
+        font-size: 1rem;
+      }
+    </style>
+  {% endblock %}
+
+  <div class="collect-section">
+    <h2><i class="fas fa-clipboard-list"></i> Collecte</h2>
+
+    <div class="collect-buttons">
+      <button type="button" onclick="window.location.href='{% url 'periodique_login' %}'">
+        <i class="fas fa-calendar-alt"></i> Periodique
+      </button>
+      <button type="button" onclick="window.location.href='{% url 'monographie_login' %}'">
+        <i class="fas fa-book"></i> Monographie
+      </button>
+      <button type="button" onclick="window.location.href='{% url 'indexeur_login' %}'">
+        <i class="fas fa-user-check"></i> Indexeur
+      </button>
+      <button type="button" onclick="window.location.href='{% url 'indexationControl_login' %}'">
+        <i class="fas fa-tasks"></i> Indexation & Contrôle
+      </button>
+      <button type="button" onclick="window.location.href='{% url 'priseVue_login' %}'">
+        <i class="fas fa-camera"></i> Prise de Vue
+      </button>
+    </div>
+
+    <hr>
+
+    <div>
+      <div class="search-section">
+        <button type="button" class="btn btn-secondary" onclick="history.back();">
+          <i class="fas fa-arrow-left"></i> Retour
+        </button>
+
+        <form method="get" action="{% url 'resultats' %}">
+          <div class="search-input">
+            {{ formSearch.q }}
+            <button type="submit"><i class="fas fa-search"></i></button>
+          </div>
+        </form>
+
+        <h2>Résultats de la recherche pour « {{ terme_recherche }} »</h2>
+      </div>
+
+      {% if documents %}
+        <div class="cards-container">
+          {% for doc in documents %}
+            <div class="document-card {% if doc.est_periodique %}periodique{% else %}non-periodique{% endif %}">
+
+              <!-- Bouton en haut à droite -->
+              {% if doc.est_periodique %}
+                <div class="periodic-label" title="Document périodique">
+                  <i class="fas fa-calendar-alt"></i> Périodique
+                </div>
+              {% else %}
+                <div class="periodic-label" title="Document non périodique">
+                  <i class="fas fa-file-alt"></i> Non périodique
+                </div>
+              {% endif %}
+
+              {% if doc.est_periodique %}
+                <h4>Titre Article : {{ doc.titre_article }}</h4>
+              {% else %}
+                <h4>Titre Document : {{ doc.titre }}</h4>
+              {% endif %}
+
+              <table class="doc-info-table">
+                <tbody>
+                  <tr>
+                    <td class="label">Auteur(s)</td>
+                    <td class="value">{{ doc.auteurs }}</td>
+                  </tr>
+                  {% if doc.est_periodique %}
+                    <tr>
+                      <td class="label">Source</td>
+                      <td class="value">{{ doc.source }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Vol</td>
+                        <td class="value">{{ doc.vol }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Tom</td>
+                        <td class="value">{{ doc.tom }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Numéro</td>
+                        <td class="value">{{ doc.num }}</td>
+                    </tr>
+                  {% else %}
+                    <tr>
+                      <td class="label">Ville d'édition</td>
+                      <td class="value">{{ doc.ville_edition }}</td>
+                    </tr>
+                    <tr>
+                      <td class="label">Édité par</td>
+                      <td class="value">{{ doc.editeur }}</td>
+                    </tr>
+                  {% endif %}
+
+                  <tr>
+                    <td class="label">Date d'édition</td>
+                    <td class="value">{{ doc.date_edition }}</td>
+                  </tr>
+                  <tr>
+                    <td class="label">Pagination</td>
+                    <td class="value">{{ doc.pages }}</td>
+                  </tr>
+                  <tr>
+                    <td class="label">Domaine</td>
+                    <td class="value">{{ doc.domaine }}</td>
+                  </tr>
+                  <tr>
+                    <td class="label">Source expéditrice</td>
+                    <td class="value">{{ doc.source }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p>Aucun résultat trouvé.</p>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

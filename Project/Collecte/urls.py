@@ -18,8 +18,13 @@ urlpatterns = [
     path('indexationControl/login/', views.IndexationControlAuthView.as_view(), name='indexationControl_login'),
     path('indexationControl/protected/', views.IndexationControlProtectedView.as_view(), name='indexationControl_protected'),
     path('indexationControl/logout/', views.indexationControl_logout, name='indexationControl_logout'),
-    #Indexation et Controle URLs
+    #Prise de Vue URLs
     path('priseVue/login/', views.PriseVueAuthView.as_view(), name='priseVue_login'),
     path('priseVue/protected/', views.PriseVueProtectedView.as_view(), name='priseVue_protected'),
     path('priseVue/logout/', views.priseVue_logout, name='priseVue_logout'),
+    #Pour la partie des resultats via SEARCH
+    path('resultats/', views.resultatSearch, name='resultats'),
+    #Partie enregistrement d'un periodique
+   
 ]
+

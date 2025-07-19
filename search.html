@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Language" content="ar-ma">
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1256">
+    <title>Résultats de recherche</title>
+    <style>
+        body {
+            background-image: url('back.gif');
+            color: #0c3173;
+            font-family: Arial, sans-serif;
+        }
+        .result-table {
+            width: 700px;
+            border: 2px solid #0c3173;
+            margin: 20px auto;
+            padding: 10px;
+            background-color: white;
+        }
+        h2 {
+            color: #0c3173;
+            margin-top: 0;
+        }
+        .back-link {
+            text-align: center;
+            margin: 20px;
+        }
+        a {
+            color: #0c3173;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Conteneur principal -->
+<div class="container">
+
+    <!-- Résultats de recherche -->
+    <div class="search-results">
+        <!-- Exemple de résultat périodique -->
+        <div class="result-table">
+            <h2>Titre Article: [TITRE_ARTICLE]</h2>
+            <p><b>[AUTEUR_PRINCIPAL]</b> & <b>[COAUTEUR]</b></p>
+            <p><b>Titre Source:</b> [TITRE_SOURCE]</p>
+            <p><b>Vol:</b> [VOLUME] / <b>Tom:</b> [TOME] / <b>N°:</b> [NUMERO]</p>
+            <p><b>Date edition:</b> [DATE_EDITION]</p>
+            <p><b>Pagination:</b> [PAGES]</p>
+            <p><b>Domaine:</b> [DOMAINE]</p>
+            <p><b>Source Expéditrice:</b> [SOURCE]</p>
+        </div>
+
+        <!-- Exemple de résultat non périodique -->
+        <div class="result-table">
+            <h2>Titre Document: [TITRE_DOCUMENT]</h2>
+            <p><b>[AUTEUR_PRINCIPAL]</b> & <b>[COAUTEUR]</b></p>
+            <p><b>Ville d'Edition:</b> [VILLE]</p>
+            <p><b>Edité par:</b> [EDITEUR]</p>
+            <p><b>Date edition:</b> [DATE_EDITION]</p>
+            <p><b>Pagination:</b> [PAGES]</p>
+            <p><b>Domaine:</b> [DOMAINE]</p>
+            <p><b>Source Expéditrice:</b> [SOURCE]</p>
+        </div>
+    </div>
+
+    <!-- Lien de retour -->
+    <div class="back-link">
+        <h3><b><a href="javascript:history.go(-1)">Retour</a></b></h3>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -3,6 +3,7 @@
 {% block content %}
 {% block css %}
   <link rel="stylesheet" href="{% static 'css/collecte/collecte.css' %}">
+  <link rel="stylesheet" href="{% static 'css/search.css' %}">
 {% endblock %}
     <div class="collect-section">
     <h2><i class="fas fa-clipboard-list"></i> Collecte</h2>
@@ -23,6 +24,19 @@
         <button type="button" onclick="window.location.href='{% url 'priseVue_login' %}'">
             <i class="fas fa-camera"></i> Prise de Vue
         </button>
+    </div>
+    <hr>
+    <h2> Enregistrement d'un periodique </h2>
+    <div class ="search-section">
+        <button type="button" onclick="window.location.href='{% url 'accueil' %}'">
+            <i class="fas fa-camera"></i> Editer
+        </button>
+        <form method="get" action="{% url 'resultats' %}">
+            <div class="search-input">
+                {{ formSearch.q }}
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </div>
+        </form>
     </div>
     </div>
 {% endblock %}

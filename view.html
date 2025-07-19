@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Language" content="ar-ma">
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1256">
+    <title>Recherche de documents</title>
+    <style>
+        body {
+            background-image: url('back.gif');
+            color: #0c3173;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            text-align: center;
+            margin: 10px 0;
+        }
+        .menu {
+            width: 100%;
+            margin: 10px 0;
+        }
+        .menu td {
+            text-align: center;
+        }
+        .search-form {
+            width: 90%;
+            margin: 20px auto;
+        }
+        .result-table {
+            width: 700px;
+            border: 2px solid #0c3173;
+            margin: 20px auto;
+            padding: 10px;
+            background-color: white;
+        }
+        a {
+            color: #0c3173;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        hr {
+            border: 1px solid #0c3173;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <img src="cnd.gif" alt="Le Centre National de Documentation" width="775" height="79">
+</div>
+
+<table class="menu">
+    <tr>
+        <td width="30%"><h3><b><a href="index.php3">Accueil</a></b></h3></td>
+        <td width="30%"><h3><b><a href="periodique.php3">Collecte</a></b></h3></td>
+        <td width="30%"><h3><b><a href="list.php3">Recherche</a></b></h3></td>
+    </tr>
+</table>
+
+<form method="post" action="view.php3" name="form2">
+    <table class="search-form" border="0">
+        <tr>
+            <td><input type="checkbox" name="titr" value="1" checked></td>
+            <td width="30%">Titre</td>
+            <td width="60%" colspan="3">
+                <input type="text" name="titre" size="80" maxlength="200">
+            </td>
+        </tr>
+        <tr>
+            <td><input type="checkbox" name="isb" value="0"></td>
+            <td width="50%">N° Enregistrement</td>
+            <td width="20%">
+                <select name="isbn">
+                    <option value="-1">-- Sélectionner --</option>
+                    <option value="12345">12345</option>
+                    <option value="67890">67890</option>
+                </select>
+            </td>
+            <td width="20%" align="right">
+                <input type="submit" name="editer" value="Editer">
+            </td>
+        </tr>
+    </table>
+</form>
+
+<hr>
+
+<!-- Exemple de résultats de recherche (serait généré dynamiquement en PHP) -->
+<div class="result-count"><b>2 Documents Trouvé(s)</b><br></div>
+
+<!-- Résultat pour un périodique -->
+<div class="result-table">
+    <h2>Titre Article: <a href="edite.php3?id=12345">L'économie marocaine en 2023</a></h2>
+    <p><b>Dr. Ahmed Smith</b> & <b>Prof. Fatima Johnson</b></p>
+    <p><b>Titre Source:</b> Revue Economique Marocaine</p>
+    <p><b>Vol:</b> 12 / <b>Tom:</b> 3 / <b>N°:</b> 45</p>
+    <p><b>Date edition:</b> 2023-05-15</p>
+    <p><b>Pagination:</b> 25-42</p>
+    <p><b>Domaine:</b> Économie</p>
+    <p><b>Source Expéditrice:</b> Ministère de l'Économie</p>
+</div>
+
+<!-- Résultat pour un document non périodique -->
+<div class="result-table">
+    <h2>Titre Document: <a href="edite.php3?id=67890">Histoire du Maroc Contemporain</a></h2>
+    <p><b>Pr. Karim Belhassan</b></p>
+    <p><b>Ville d'Edition:</b> Rabat</p>
+    <p><b>Edité par:</b> Éditions Nationales</p>
+    <p><b>Date edition:</b> 2022-11-30</p>
+    <p><b>Pagination:</b> 350</p>
+    <p><b>Domaine:</b> Histoire</p>
+    <p><b>Source Expéditrice:</b> Bibliothèque Nationale</p>
+</div>
+
+</body>
+</html>

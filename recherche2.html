@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Language" content="ar-ma">
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1256">
+    <title>Résultats de recherche</title>
+    <style>
+        body {
+            background-image: url('back.gif');
+            color: #0c3173;
+            font-family: verdana;
+        }
+        table {
+            border-spacing: 8px;
+        }
+        h2 {
+            color: #004080;
+            margin-bottom: 5px;
+        }
+        a {
+            color: #004080;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .result-count {
+            font-weight: bold;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+
+<center><img src="cnd.gif" alt="Le Centre National de Documentation" border="0" width="775" height="79"></center>
+
+<br>
+Rechercher un document par:<br/>
+
+<form method="POST" action="recherche2.php3">
+
+<table border="0" cellpadding="0" cellspacing="8">
+<tr>
+    <td><input type="checkbox" name="titr" value="1" checked></td><td>Titre:</td>
+    <td><input type="text" name="titre" size="80" maxlength="80"></td>
+</tr>
+<tr>
+    <td><input type="checkbox" name="auteu" value="0"></td><td>Collectivite/Auteur:</td>
+    <td>
+        <select name="auteur">
+            <option value="-1">-- Sélectionnez un auteur --</option>
+            <option value="1">Auteur 1</option>
+            <option value="2">Auteur 2</option>
+        </select>
+    </td>
+</tr>
+<tr>
+    <td><input type="checkbox" name="edit" value="0"></td><td>Editeur:</td>
+    <td>
+        <select name="editeur">
+            <option value="-1">-- Sélectionnez un éditeur --</option>
+            <option value="1">Editeur 1</option>
+            <option value="2">Editeur 2</option>
+        </select>
+    </td>
+</tr>
+
+<tr>
+    <td><input type="checkbox" name="src" value="0"></td><td>Source:</td>
+    <td>
+        <select name="source">
+            <option value="-1">-- Sélectionnez une source --</option>
+            <option value="1">Source 1</option>
+            <option value="2">Source 2</option>
+        </select>
+    </td>
+</tr>
+
+<tr>
+    <td><input type="checkbox" name="domain" value="0"></td><td>Domaine:</td>
+    <td>
+        <select name="domaine">
+            <option value="-1">-- Sélectionnez un domaine --</option>
+            <option value="1">Domaine 1</option>
+            <option value="2">Domaine 2</option>
+        </select>
+    </td>
+</tr>
+
+<tr>
+    <td><input type="checkbox" name="lang" value="0"></td><td>Langue:</td>
+    <td>
+        <select name="langue">
+            <option value="-1">-- Sélectionnez une langue --</option>
+            <option value="Fr">Français</option>
+            <option value="Ar">Arabe</option>
+        </select>
+    </td>
+</tr>
+
+<tr>
+    <td><input type="checkbox" name="dernier" value="0"></td><td>Les 20 derniers documents</td>
+</tr>
+
+<tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td align="right"><input type="submit" value="Rechercher"></td>
+</tr>
+</table>
+
+</form>
+
+<!-- Section des résultats (statique) -->
+<div class="result-count">Résultat de la recherche : 3 document(s)</div>
+
+<h2><a href="detail.php3?id=123">Titre du document 1</a></h2>
+<h2><a href="detail.php3?id=124">Titre de l'article 2</a></h2>
+<h2><a href="detail.php3?id=125">Titre du document 3</a></h2>
+
+</body>
+</html>

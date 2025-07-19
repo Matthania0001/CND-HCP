@@ -1,0 +1,87 @@
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 cartes par ligne minimum */
+  gap: 20px;
+  margin-top: 30px;
+  padding: 0 20px;
+  justify-items: center;
+}
+
+.document-card {
+  max-width: 320px;  /* largeur max réduite */
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  box-sizing: border-box;
+  transition: transform 0.3s ease;
+  color: #333;
+  background-color: #ffffff; /* Fond blanc uniforme */
+  border-left: none; /* Suppression bordure gauche colorée */
+}
+
+.document-card:hover {
+  transform: scale(1.03);
+}
+
+.document-card h4 {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  color: #222;
+  word-break: break-word;
+}
+
+/* Table info rayée */
+.doc-info-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  font-size: 14px;
+  color: inherit;
+}
+
+.doc-info-table tbody tr:nth-child(odd) {
+  background-color: #f0f8ff; /* bleu très clair, AliceBlue */
+}
+
+.doc-info-table tbody tr:nth-child(even) {
+  background-color: #ffffff; /* blanc pur */
+}
+
+.doc-info-table td {
+  padding: 8px 10px;
+  vertical-align: middle;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  color: #222; /* texte sombre pour bonne lisibilité */
+}
+
+.doc-info-table td.label {
+  text-align: left;
+  font-weight: 600;
+  width: 45%;
+  color: #444;
+}
+
+.doc-info-table td.value {
+  text-align: right;
+  width: 55%;
+  word-break: break-word;
+  color: #222;
+}
+
+/* Responsive */
+@media (max-width: 1000px) {
+  .cards-container {
+    grid-template-columns: repeat(2, 1fr); /* 2 cartes sur écran moyen */
+  }
+}
+
+@media (max-width: 600px) {
+  .cards-container {
+    grid-template-columns: 1fr; /* 1 carte sur petit écran */
+  }
+  
+  .document-card {
+    max-width: 100%; /* occuper toute la largeur */
+  }
+}

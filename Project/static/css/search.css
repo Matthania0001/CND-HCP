@@ -1,0 +1,116 @@
+/* 1. Boîte globale */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* 2. Conteneur flexible */
+.search-section {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+/* 3. Bouton "Editer" avec styles modernes */
+.search-section > button {
+  background: #ffffff;
+  color: #3EA9F0;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 30px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+.search-section > button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+.search-section > button i {
+  font-size: 1rem;
+}
+
+/* 4. Formulaire responsive */
+.search-section form {
+  flex: 1 1 auto;
+}
+
+/* 5. Alignement du champ + bouton */
+.search-input {
+  display: flex;
+  width: 100%;
+}
+
+/* 6. Champ de saisie stylé */
+.search-input input[type="text"],
+.search-input input {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ccc;
+  border-right: none;
+  border-radius: 30px 0 0 30px;
+  font-size: 1rem;
+  outline: none;
+}
+
+/* 7. Bouton "Rechercher" */
+.search-input button {
+  background: #3EA9F0;
+  border: none;
+  color: #fff;
+  padding: 0 1rem;
+  border-radius: 0 30px 30px 0;
+  min-width: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.search-input button:hover {
+  background: #2E86DE;
+}
+
+/* 8. Hauteur tactile minimale */
+.search-section button,
+.search-input input,
+.search-input button {
+  min-height: 48px;
+}
+.search-input input {
+  border-right: 1px solid #ccc;
+}
+
+/* 9. Mobile-first : éléments empilés sous 480px */
+@media (max-width: 480px) {
+  .search-section {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .search-section > button {
+    width: 100%;
+    justify-content: center;
+  }
+  .search-input {
+    flex-direction: column;
+  }
+  .search-input input,
+  .search-input button {
+    width: 100%;
+    border-radius: 30px;
+  }
+  .search-input button {
+    margin-top: 4px;
+  }
+  .search-input input {
+    margin-top: 4px;
+    border-right: 1px solid #ccc;
+  }
+}

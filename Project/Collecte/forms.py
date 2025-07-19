@@ -218,3 +218,149 @@ class PeriodiqueFormGeneral(forms.Form):
 
 
 
+from django import forms
+
+class SearchForm(forms.Form):
+    q = forms.CharField(
+        label='Titre',
+        max_length=200,
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Rechercher par titre...',
+        })
+    )
+
+from django import forms
+from django.core.validators import RegexValidator
+from Main.models import Doc, Ecriture, Edition, Fournit, Collecte, Domaine, Source, Editeur
+
+class ArticlePeriodiqueForm(forms.Form):
+    # Section 1: Informations de base
+    n_enregistrement = forms.IntegerField(
+        label="N° Enregistrement",
+        help_text="/2023"
+    )
+    
+    titre_article = forms.CharField(
+        label="Titre Article*",
+        max_length=200,
+        widget=forms.TextInput(attrs={'size': '100'}),
+        help_text="Extrait d'ouvrage collectif, Extrait d'acte de congrès, Extrait de périodique"
+    )
+    
+    auteurs = forms.CharField(
+        label="Auteur/Collectivité",
+        max_length=255,
+        widget=forms.TextInput(attrs={'size': '100'}),
+        help_text="Séparer les auteurs par des /"
+    )
+    
+    titre = forms.CharField(
+        label="Titre Source**",
+        max_length=200,
+        widget=forms.TextInput(attrs={'size': '100'}),
+        help_text="Titre du document générique"
+    )
+    
+    # Section 2: Volume/Tome/Numéro
+    vol = forms.CharField(
+        label="Volume",
+        max_length=25,
+        widget=forms.TextInput(attrs={'size': '10'}))
+    
+    tom = forms.CharField(
+        label="Tome",
+        max_length=25,
+        widget=forms.TextInput(attrs={'size': '10'}))
+    
+    num = forms.CharField(
+        label="N°",
+        max_length=25,
+        widget=forms.TextInput(attrs={'size': '10'}))
+    
+    # Section 3: Dates et métadonnées
+    date_edition = forms.DateField(
+        label="Date d'édition",
+        input_formats=['%Y-%m-%d'],
+        help_text="Format: AAAA-MM-JJ"
+    )
+    
+    pages = forms.CharField(
+        label="Pagination (p.)",
+        max_length=30,
+        required=False,
+        help_text="ex: 20-25"
+    )
+    
+    domaine = forms.ModelChoiceField(
+        queryset=Domaine.objects.all(),
+        label="Domaine",
+        to_field_name="domaine"
+    )
+    
+    LANGUE_CHOICES = [
+        ('fr', 'Français'),
+        ('ar', 'Arabe'),
+        ('en', 'Anglais'),
+        ('es', 'Espagnol')
+    ]
+    
+    langue = forms.ChoiceField(
+        choices=LANGUE_CHOICES,
+        label="Langue"
+    )
+    
+    source_expeditrice = forms.ModelChoiceField(
+        queryset=Source.objects.all(),
+        label="Source Expéditrice",
+        to_field_name="source"
+    )
+    
+    TYPE_ACQUISITION = [
+        ('achat', 'Achat'),
+        ('don', 'Don'),
+        ('échange', 'Échange'),
+        ('abonnement', 'Abonnement')
+    ]
+    
+    type_acquisition = forms.ChoiceField(
+        choices=TYPE_ACQUISITION,
+        label="Type d'acquisition"
+    )
+    
+    date_reception = forms.DateField(
+        label="Date de réception",
+        input_formats=['%Y-%m-%d'],
+        help_text="Format: AAAA-MM-JJ"
+    )
+    
+    responsable_saisie = forms.CharField(
+        label="Responsable de saisie",
+        max_length=100,
+        widget=forms.TextInput(attrs={'size': '50'}))
+    
+    date_saisie = forms.DateField(
+        label="Date de saisie",
+        input_formats=['%Y-%m-%d'],
+        help_text="Format: AAAA-MM-JJ"
+    )
+    
+    date_envoi = forms.DateField(
+        label="Date d'envoi au traitement",
+        input_formats=['%Y-%m-%d'],
+        help_text="Format: AAAA-MM-JJ"
+    )
+    
+    ville_edition = forms.CharField(
+        label="Ville d'édition",
+        max_length=60,
+        required=False
+    )
+    
+    editeur = forms.ModelChoiceField(
+        queryset=Editeur.objects.all(),
+        label="Éditeur",
+        to_field_name="editeur",
+        required=False
+    )

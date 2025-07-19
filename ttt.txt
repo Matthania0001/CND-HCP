@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+  <h1>Résultats de la recherche pour « {{ terme_recherche }} »</h1>
+
+    <div class ="search-section">
+        <button type="button" onclick="window.location.href='{% url 'accueil' %}'">
+            <i class="fas fa-camera"></i> Editer
+        </button>
+        <form method="get" action="{% url 'resultats' %}">
+            <div class="search-input">
+                {{ formSearch.q }}
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </div>
+        </form>
+    </div>
+
+  {% if documents %}
+    {% for doc in documents %}
+      <table width="700" border="2" style="margin-bottom: 20px; border-collapse: collapse;">
+        <tr>
+          <td width="70%" rowspan="2" style="padding: 10px; vertical-align: top;">
+            {% if doc.est_periodique %}
+              <h2>Titre Article : {{ doc.titre_article }}</h2>
+            {% else %}
+              <h2>Titre Document : {{ doc.titre }}</h2>
+            {% endif %}
+
+            <b>{{ doc.auteurs }}</b><br/><br/>
+
+            {% if doc.est_periodique %}
+              <b>Source :</b> {{ doc.source }}<br/>
+              <b>Vol :</b> {{ doc.vol }} / <b>Tom :</b> {{ doc.tom }} / <b>Numéro :</b> {{ doc.num }}<br/>
+            {% else %}
+              <b>Ville d'édition :</b> {{ doc.ville_edition }}<br/>
+              <b>Édité par :</b> {{ doc.editeur }}<br/>
+            {% endif %}
+
+            <b>Date d'édition :</b> {{ doc.date_edition }}<br/>
+            <b>Pagination :</b> {{ doc.pages }}<br/>
+            <b>Domaine :</b> {{ doc.domaine }}</b><br/>
+            <b>Source expéditrice :</b> {{ doc.source }}</b><br/>
+          </td>
+        </tr>
+      </table>
+    {% endfor %}
+  {% else %}
+    <p>Aucun résultat trouvé.</p>
+  {% endif %}
+
+  <p>
+    <a href="javascript:history.back()" class="btn btn-secondary">Retour</a>
+  </p>
+{% endblock %}
