@@ -3,6 +3,8 @@
 {% block content %}
 {% block css %}
   <link rel="stylesheet" href="{% static 'css/collecte/collecte.css' %}">
+   <link rel="stylesheet" href="{% static 'css/search.css' %}">
+   <link rel="stylesheet" href="{% static 'css/form.css' %}">
 {% endblock %}
     <div class="collect-section">
     <h2><i class="fas fa-clipboard-list"></i> Collecte</h2>
@@ -24,5 +26,263 @@
             <i class="fas fa-camera"></i> Prise de Vue
         </button>
     </div>
+    <hr>
+    
+    <h2>Enregistrement d'une Monographie</h2>
+    
+    <div class="search-section">
+        <button type="button" onclick="window.location.href='{% url 'accueil' %}'">
+            <i class="fas fa-camera"></i> Editer
+        </button>
+        <form method="get" action="{% url 'resultats' %}">
+            <div class="search-input">
+                {{ formSearch.q }}
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </div>
+        </form>
+    </div>
+    
+    <div class="periodique-form-section">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="post" class="article-periodique-form">
+            {% csrf_token %}
+            
+            <!-- Section Informations de base -->
+            <div class="form-section">
+                <h3><i class="fas fa-info-circle"></i> Informations de base</h3>
+                
+                <!-- N° Enregistrement -->
+                <div class="form-group">
+                    {% if monographie_form.n_enregistrement.errors %}
+                    <div class="alert alert-error">{{ monographie_form.n_enregistrement.errors }}</div>
+                    {% endif %}
+                    <div class="field-row">
+                        {{ monographie_form.n_enregistrement.label_tag }}
+                        {{ monographie_form.n_enregistrement }}
+                    </div>
+                    <span class="help-text">/2023</span>
+                </div>
+                
+                <!-- Titre Article -->
+                <div class="form-group">
+                    {% if monographie_form.titre_article.errors %}
+                    <div class="alert alert-error">{{ monographie_form.titre_article.errors }}</div>
+                    {% endif %}
+                    <div class="field-row">
+                        {{ monographie_form.titre_article.label_tag }}
+                        {{ monographie_form.titre_article }}
+                    </div>
+                    <span class="help-text">{{ monographie_form.titre_article.help_text }}</span>
+                </div>
+                
+                <!-- Auteurs -->
+                <div class="form-group">
+                    {% if monographie_form.auteurs.errors %}
+                    <div class="alert alert-error">{{ monographie_form.auteurs.errors }}</div>
+                    {% endif %}
+                    <div class="field-row">
+                        {{ monographie_form.auteurs.label_tag }}
+                        {{ monographie_form.auteurs }}
+                    </div>
+                    <span class="help-text">{{ monographie_form.auteurs.help_text }}</span>
+                </div>
+                
+                <!-- Ville édition -->
+                <div class="form-group">
+                    {% if monographie_form.ville_edition.errors %}
+                    <div class="alert alert-error">{{ monographie_form.ville_edition.errors }}</div>
+                    {% endif %}
+                    <div class="field-row">
+                        {{ monographie_form.ville_edition.label_tag }}
+                        {{ monographie_form.ville_edition }}
+                    </div>
+                </div>
+                
+                <!-- Éditeur -->
+                <div class="form-group">
+                    {% if monographie_form.editeur.errors %}
+                    <div class="alert alert-error">{{ monographie_form.editeur.errors }}</div>
+                    {% endif %}
+                    <div class="field-row">
+                        {{ monographie_form.editeur.label_tag }}
+                        {{ monographie_form.editeur }}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section Détails du périodique -->
+            
+            <!-- Section Métadonnées -->
+            <div class="form-section">
+                <h3><i class="fas fa-calendar-alt"></i> Métadonnées</h3>
+                
+                <!-- Date édition + Pagination -->
+                <div class="form-row">
+                    <!-- Date édition -->
+                    <div class="form-group">
+                        {% if monographie_form.date_edition.errors %}
+                        <div class="alert alert-error">{{ monographie_form.date_edition.errors }}</div>
+                        {% endif %}
+                        <div class="field-row">
+                            {{ monographie_form.date_edition.label_tag }}
+                            {{ monographie_form.date_edition }}
+                        </div>
+                        <span class="help-text">{{ monographie_form.date_edition.help_text }}</span>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="form-group">
+                        {% if monographie_form.pages.errors %}
+                        <div class="alert alert-error">{{ monographie_form.pages.errors }}</div>
+                        {% endif %}
+                        <div class="field-row">
+                            {{ monographie_form.pages.label_tag }}
+                            {{ monographie_form.pages }}
+                        </div>
+                        <span class="help-text">{{ monographie_form.pages.help_text }}</span>
+                    </div>
+                </div>
+                
+                <!-- Domaine + Langue -->
+                <div class="form-row">
+                    <!-- Domaine -->
+                    <div class="form-group">
+                        {% if monographie_form.domaine.errors %}
+                        <div class="alert alert-error">{{ monographie_form.domaine.errors }}</div>
+                        {% endif %}
+                        <div class="field-row">
+                            {{ monographie_form.domaine.label_tag }}
+                            {{ monographie_form.domaine }}
+                        </div>
+                    </div>
+                    <!-- Type -->
+                    <div class="form-group">
+                        {% if monographie_form.type.errors %}
+                        <div class="alert alert-error">{{ monographie_form.type.errors }}</div>
+                        {% endif %}
+                        <div class="field-row">
+                            {{ monographie_form.type.label_tag }}
+                            {{ monographie_form.type }}
+                        </div>
+                    </div>
+                    <!-- Langue -->
+                    <div class="form-group">
+                        {% if monographie_form.langue.errors %}
+                        <div class="alert alert-error">{{ monographie_form.langue.errors }}</div>
+                        {% endif %}
+                        <div class="field-row">
+                            {{ monographie_form.langue.label_tag }}
+                            {{ monographie_form.langue }}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Source expéditrice -->
+                <div class="form-group">
+                    {% if monographie_form.source_expeditrice.errors %}
+                    <div class="alert alert-error">{{ monographie_form.source_expeditrice.errors }}</div>
+                    {% endif %}
+                    <div class="field-row">
+                        {{ monographie_form.source_expeditrice.label_tag }}
+                        {{ monographie_form.source_expeditrice }}
+                    </div>
+                </div>
+                
+                <!-- Type acquisition -->
+                <div class="form-group">
+                    {% if monographie_form.type_acquisition.errors %}
+                    <div class="alert alert-error">{{ monographie_form.type_acquisition.errors }}</div>
+                    {% endif %}
+                    <div class="field-row">
+                        {{ monographie_form.type_acquisition.label_tag }}
+                        {{ monographie_form.type_acquisition }}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section Suivi -->
+            <div class="form-section">
+                <h3><i class="fas fa-user-tie"></i> Suivi</h3>
+                
+                <!-- Date réception + Responsable -->
+                <div class="form-row">
+                    <!-- Date réception -->
+                    <div class="form-group">
+                        {% if monographie_form.date_reception.errors %}
+                        <div class="alert alert-error">{{ monographie_form.date_reception.errors }}</div>
+                        {% endif %}
+                        <div class="field-row">
+                            {{ monographie_form.date_reception.label_tag }}
+                            {{ monographie_form.date_reception }}
+                        </div>
+                        <span class="help-text">{{ monographie_form.date_reception.help_text }}</span>
+                    </div>
+                    
+                    <!-- Responsable saisie -->
+                    <div class="form-group">
+                        {% if monographie_form.responsable_saisie.errors %}
+                        <div class="alert alert-error">{{ monographie_form.responsable_saisie.errors }}</div>
+                        {% endif %}
+                        <div class="field-row">
+                            {{ monographie_form.responsable_saisie.label_tag }}
+                            {{ monographie_form.responsable_saisie }}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Date saisie + Date envoi -->
+                <div class="form-row">
+                    <!-- Date saisie -->
+                    <div class="form-group">
+                        {% if monographie_form.date_saisie.errors %}
+                        <div class="alert alert-error">{{ monographie_form.date_saisie.errors }}</div>
+                        {% endif %}
+                        <div class="field-row">
+                            {{ monographie_form.date_saisie.label_tag }}
+                            {{ monographie_form.date_saisie }}
+                        </div>
+                        <span class="help-text">{{ monographie_form.date_saisie.help_text }}</span>
+                    </div>
+                    
+                    <!-- Date envoi -->
+                    <div class="form-group">
+                        {% if monographie_form.date_envoi.errors %}
+                        <div class="alert alert-error">{{ monographie_form.date_envoi.errors }}</div>
+                        {% endif %}
+                        <div class="field-row">
+                            {{ monographie_form.date_envoi.label_tag }}
+                            {{ monographie_form.date_envoi }}
+                        </div>
+                        <span class="help-text">{{ monographie_form.date_envoi.help_text }}</span>
+                    </div>
+                </div>
+                
+                <!-- Ville édition + Éditeur -->
+                <div class="form-row">
+                    
+                </div>
+            </div>
+            
+            <!-- Boutons d'action -->
+            <div class="form-actions">
+                <button type="reset" class="effacer">
+                    <i class="fas fa-eraser"></i> Effacer
+                </button>
+                <button type="submit" class="enregistrer">
+                    <i class="fas fa-save"></i> Enregistrer
+                </button>
+            </div>
+        </form>
+        </div>
+        <!-- Notes explicatives -->
     </div>
 {% endblock %}

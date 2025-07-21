@@ -3,8 +3,11 @@
 {% block content %}
 {% block css %}
   <link rel="stylesheet" href="{% static 'css/collecte/collecte.css' %}">
+  <link rel="stylesheet" href="{% static 'css/form.css' %}">
+  <link rel="stylesheet" href="{% static 'css/search.css' %}">
+  <link rel="stylesheet" href="{% static 'css/liste.css' %}">
 {% endblock %}
-    <div class="collect-section">
+<div class="collect-section">
     <h2><i class="fas fa-clipboard-list"></i> Collecte</h2>
 
     <div class="collect-buttons">
@@ -24,5 +27,92 @@
             <i class="fas fa-camera"></i> Prise de Vue
         </button>
     </div>
+    <h2>Affectation d'un indexeur </h2>
+    <div class="search-section">
+        <button type="button" onclick="window.location.href='{% url 'accueil' %}'">
+            <i class="fas fa-camera"></i> Editer
+        </button>
+        <form method="get" action="{% url 'resultats' %}">
+            <div class="search-input">
+                {{ formSearch.q }}
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </div>
+        </form>
     </div>
+    <div class="periodique-form-section">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <form method="post" class="article-periodique-form">
+            {% csrf_token %}
+            
+            <!-- Section Informations de base -->
+            <div class="form-section">
+                
+                <!-- N° Enregistrement -->
+                <div class="form-group">
+                    {% if formIndexeur.num.errors %}
+                    <div class="alert alert-error">{{formIndexeur.num.errors }}</div>
+                    {% endif %}
+                    <div class="field-row">
+                        {{ formIndexeur.num.label_tag }}
+                        {{ formIndexeur.num }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    {% if formIndexeur.nomi.errors %}
+                    <div class="alert alert-error">{{formIndexeur.nomi.errors }}</div>
+                    {% endif %}
+                    <div class="field-row">
+                        {{ formIndexeur.nomi.label_tag }}
+                        {{ formIndexeur.nomi }}
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="reset" class="effacer">
+                        <i class="fas fa-plus"></i> Ajouter
+                    </button>
+                </div>
+            </form>
+    </div>
+</div>
+<h2>Liste des indexeurs et nombre de documents</h2>
+<div class="liste">
+    {% comment %} <div class="indexeurs-table-section" style="margin-top: 40px;"> {% endcomment %}
+        <table class="table-indexeurs" style="width:100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th>Nom de l'indexeur</th>
+                    <th>Nombre de documents</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for indexeur in indexeurs %}
+                <tr>
+                    <td>{{ indexeur.nomi }}</td>
+                    <td>{{ indexeur.nombre }}</td>
+                    <td>
+                        <form method="get" action="{% url 'accueil'%}" style="display:inline;"> 
+                            <button type="submit" class="circular-btn" title="Voir les documents" style="border-radius:50%; width:36px; height:36px; border:none; background:#3498db; color:#fff;">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3">Aucun indexeur trouvé.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% comment %} </div> {% endcomment %}
+</div>
 {% endblock %}

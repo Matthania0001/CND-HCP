@@ -14,7 +14,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.db import connection
 from django.views import View
-from .forms import PeriodiqueForm, MonographieForm, IndexeurForm, IndexationControlForm, PriseVueForm, SearchForm
+from .forms import PeriodiqueForm, MonographieForm, IndexeurForm, IndexationControlForm, PriseVueForm, SearchForm, IndexeurContentForm
 
 class PeriodiqueAuthView(View):
     template_name = 'logins/periodique.html'
@@ -88,9 +88,9 @@ from .forms import SearchForm
 
 from django.shortcuts import render, redirect
 from django.views import View
-from .forms import ArticlePeriodiqueForm, SearchForm
+from .forms import ArticlePeriodiqueForm, SearchForm, NonPeriodiqueForm
 from django.contrib import messages
-from Main.models import Doc, Ecriture, Edition, Fournit, Collecte, Suivi
+from Main.models import Doc, Ecriture, Edition, Fournit, Collecte, Suivi, Indexation
 
 class PeriodiqueProtectedView(View):
     template_name = 'periodique.html'
@@ -241,15 +241,97 @@ class MonographieProtectedView(View):
             return redirect('monographie_login')
             
         return super().dispatch(request, *args, **kwargs)
-    
     def get(self, request):
-        return render(request, self.template_name)
+        # Initialisation des formulaires
+        formSearch = SearchForm(request.GET or None)
+        monographie_form = NonPeriodiqueForm()
+        
+        context = {
+            'formSearch': formSearch,
+            'monographie_form': monographie_form,
+        }
+        return render(request, self.template_name, context)
+    
+    def post(self, request):
+        monographie_form = NonPeriodiqueForm(request.POST)
+        formSearch = SearchForm(request.GET or None)
+        
+        if monographie_form.is_valid():
+            try:
+                # Sauvegarde dans la table Doc
+                doc = Doc.objects.create(
+                    n_enregistrement=monographie_form.cleaned_data['n_enregistrement'],
+                    titre=monographie_form.cleaned_data['titre'],
+                    titre_article=monographie_form.cleaned_data['titre_article'],
+                    periodicite='p',  # Périodique
+                    vol=monographie_form.cleaned_data['vol'],
+                    tom=monographie_form.cleaned_data['tom'],
+                    num=monographie_form.cleaned_data['num'],
+                    pages=monographie_form.cleaned_data['pages'],
+                    domaine=monographie_form.cleaned_data['domaine'].domaine,
+                    statut='collecte',
+                    lang=monographie_form.cleaned_data['langue'],
+                )
+                
+                # Gestion des auteurs (séparés par /)
+                auteurs = monographie_form.cleaned_data['auteurs'].split('/')
+                for auteur in auteurs:
+                    if auteur.strip():  # Ignore les chaînes vides
+                        Ecriture.objects.create(
+                            auteur=auteur.strip(),
+                            n_enregistrement=doc.n_enregistrement
+                        )
+                
+                # Sauvegarde dans Edition
+                if monographie_form.cleaned_data['editeur']:
+                    Edition.objects.create(
+                        editeur=monographie_form.cleaned_data['editeur'].editeur,
+                        n_enregistrement=doc.n_enregistrement,
+                        ville_edition=monographie_form.cleaned_data['ville_edition'],
+                        date_edition=monographie_form.cleaned_data['date_edition'],
+                    )
+                
+                # Sauvegarde dans Fournit
+                Fournit.objects.create(
+                    source=monographie_form.cleaned_data['source_expeditrice'].source,
+                    n_enregistrement=doc.n_enregistrement,
+                    date_reception=monographie_form.cleaned_data['date_reception'],
+                    obligation=monographie_form.cleaned_data['type_acquisition']
+                )
+                
+                # Sauvegarde dans Collecte
+                Collecte.objects.create(
+                    nomrc=monographie_form.cleaned_data['responsable_saisie'],
+                    n_enregistrement=doc.n_enregistrement,
+                    datsaisi_c=monographie_form.cleaned_data['date_saisie']
+                )
+                
+                # Sauvegarde dans Suivi
+                Suivi.objects.create(
+                    noms=monographie_form.cleaned_data['responsable_saisie'],
+                    n_enregistrement=doc.n_enregistrement,
+                    datenvoi_t=monographie_form.cleaned_data['date_envoi']
+                )
+                
+                messages.success(request, "L'article périodique a été enregistré avec succès!")
+                return redirect('periodique')
+            
+            except Exception as e:
+                messages.error(request, f"Une erreur est survenue: {str(e)}")
+        
+        # Si le formulaire n'est pas valide ou erreur d'enregistrement
+        context = {
+            'formSearch': formSearch,
+            'monographie_form': monographie_form,
+        }
+        return render(request, self.template_name, context)
 
 
 def monographie_logout(request):
     request.session.flush()
     return redirect('monographie_login')
 
+from django.db.models import Count
 
 # Partie Indexeur
 class IndexeurAuthView(View):
@@ -296,9 +378,45 @@ class IndexeurProtectedView(View):
             return redirect('indexeur_login')
             
         return super().dispatch(request, *args, **kwargs)
+    def post(self, request):
+        formIndexeur = IndexeurContentForm(request.POST)
+        if formIndexeur.is_valid():
+            try:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "INSERT INTO indexation (n_enregistrement, nomi) VALUES (%s, %s)",[formIndexeur.cleaned_data['n_enregistrement'], formIndexeur.cleaned_data['nomi']]
+                    )
+                    cursor.execute(
+                        "UPDATE doc SET statut = 'suivi1' WHERE n_enregistrement = %s", [formIndexeur.cleaned_data['n_enregistrement']]
+                    )
+                messages.success(request, "Document affecté avec succès!")
+                return redirect('indexeur_protected')
+            except Exception as e:
+                messages.error(request, f"Erreur lors de l'affectation du document: {str(e)}")
+
+        return render(request, self.template_name, {'formIndexeur': formIndexeur})
     
     def get(self, request):
-        return render(request, self.template_name)
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT i.nomi, COUNT(i.n_enregistrement) AS nombre
+                FROM indexation i
+                INNER JOIN doc d ON i.n_enregistrement = d.n_enregistrement
+                WHERE d.statut = %s
+                GROUP BY i.nomi
+                ORDER BY i.nomi
+            """, ['suivi1'])
+            rows = cursor.fetchall()
+            indexeurs = [
+                {'nomi': row[0], 'nombre': row[1]}
+                for row in rows
+            ] if rows else []
+        context = {
+            'formIndexeur': IndexeurContentForm(),
+            'formSearch': SearchForm(request.GET or None),
+            'indexeurs': indexeurs,  # Toujours une liste
+        }
+        return render(request, self.template_name, context)
 
 
 def indexeur_logout(request):
