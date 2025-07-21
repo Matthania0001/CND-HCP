@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% comment %} {% extends "base.html" %}
 {% load static %}
 {% block content %}
 {% block css %}
@@ -38,5 +39,562 @@
             </div>
         </form>
     </div>
+    
     </div>
+{% endblock %} {% endcomment %}
+
+
+{% comment %} {% load static %}
+{% block content %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/collecte/collecte.css' %}">
+  <link rel="stylesheet" href="{% static 'css/search.css' %}">
+  <link rel="stylesheet" href="{% static 'css/form.css' %}"> <!-- Nouveau CSS spécifique -->
+{% endblock %}
+    <div class="collect-section">
+    <h2><i class="fas fa-clipboard-list"></i> Collecte</h2>
+
+    <div class="collect-buttons">
+        <button type="button" onclick="window.location.href='{% url 'periodique_protected' %}'">
+            <i class="fas fa-calendar-alt"></i> Periodique
+        </button>
+        <button type="button" onclick="window.location.href='{% url 'monographie_login' %}'">
+            <i class="fas fa-book"></i> Monographie
+        </button>
+        <button type="button" onclick="window.location.href='{% url 'indexeur_login' %}'">
+            <i class="fas fa-user-check"></i> Indexeur
+        </button>
+        <button type="button" onclick="window.location.href='{% url 'indexationControl_login' %}'">
+            <i class="fas fa-tasks"></i> Indexation & Contrôle
+        </button>
+        <button type="button" onclick="window.location.href='{% url 'priseVue_login' %}'">
+            <i class="fas fa-camera"></i> Prise de Vue
+        </button>
+    </div>
+    <hr>
+    <h2> Enregistrement d'un periodique </h2>
+    <div class ="search-section">
+        <button type="button" onclick="window.location.href='{% url 'accueil' %}'">
+            <i class="fas fa-camera"></i> Editer
+        </button>
+        <form method="get" action="{% url 'resultats' %}">
+            <div class="search-input">
+                {{ formSearch.q }}
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Nouvelle section pour le formulaire d'article périodique -->
+    <div class="periodique-form-section">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="post" class="article-periodique-form">
+            {% csrf_token %}
+            
+            <div class="form-section">
+                <h3><i class="fas fa-info-circle"></i> Informations de base</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ article_form.n_enregistrement.label_tag }}
+                        {{ article_form.n_enregistrement }}
+                        <span class="help-text">/2023</span>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ article_form.titre_article.label_tag }}
+                        {{ article_form.titre_article }}
+                        <span class="help-text">{{ article_form.titre_article.help_text }}</span>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ article_form.auteurs.label_tag }}
+                        {{ article_form.auteurs }}
+                        <span class="help-text">{{ article_form.auteurs.help_text }}</span>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ article_form.titre.label_tag }}
+                        {{ article_form.titre }}
+                        <span class="help-text">{{ article_form.titre.help_text }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section Volume/Tome/Numéro scindée -->
+            <div class="form-section">
+                <h3><i class="fas fa-book-open"></i> Détails du périodique</h3>
+                
+                <div class="form-row triple-fields">
+                    <!-- Volume -->
+                    <div class="form-group">
+                        {{ article_form.vol.label_tag }}
+                        {{ article_form.vol }}
+                    </div>
+                    
+                    <!-- Tome -->
+                    <div class="form-group">
+                        {{ article_form.tom.label_tag }}
+                        {{ article_form.tom }}
+                    </div>
+                    
+                    <!-- Numéro -->
+                    <div class="form-group">
+                        {{ article_form.num.label_tag }}
+                        {{ article_form.num }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <h3><i class="fas fa-calendar-alt"></i> Métadonnées</h3>
+                
+                <div class="form-row double-fields">
+                    <div class="form-group">
+                        {{ article_form.date_edition.label_tag }}
+                        {{ article_form.date_edition }}
+                        <span class="help-text">{{ article_form.date_edition.help_text }}</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ article_form.pages.label_tag }}
+                        {{ article_form.pages }}
+                        <span class="help-text">{{ article_form.pages.help_text }}</span>
+                    </div>
+                </div>
+                
+                <div class="form-row double-fields">
+                    <div class="form-group">
+                        {{ article_form.domaine.label_tag }}
+                        {{ article_form.domaine }}
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ article_form.langue.label_tag }}
+                        {{ article_form.langue }}
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ article_form.source_expeditrice.label_tag }}
+                        {{ article_form.source_expeditrice }}
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ article_form.type_acquisition.label_tag }}
+                        {{ article_form.type_acquisition }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <h3><i class="fas fa-user-tie"></i> Suivi</h3>
+                
+                <div class="form-row double-fields">
+                    <div class="form-group">
+                        {{ article_form.date_reception.label_tag }}
+                        {{ article_form.date_reception }}
+                        <span class="help-text">{{ article_form.date_reception.help_text }}</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ article_form.responsable_saisie.label_tag }}
+                        {{ article_form.responsable_saisie }}
+                    </div>
+                </div>
+                
+                <div class="form-row double-fields">
+                    <div class="form-group">
+                        {{ article_form.date_saisie.label_tag }}
+                        {{ article_form.date_saisie }}
+                        <span class="help-text">{{ article_form.date_saisie.help_text }}</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ article_form.date_envoi.label_tag }}
+                        {{ article_form.date_envoi }}
+                        <span class="help-text">{{ article_form.date_envoi.help_text }}</span>
+                    </div>
+                </div>
+                
+                <div class="form-row double-fields">
+                    <div class="form-group">
+                        {{ article_form.ville_edition.label_tag }}
+                        {{ article_form.ville_edition }}
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ article_form.editeur.label_tag }}
+                        {{ article_form.editeur }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button type="reset" class="btn btn-secondary">
+                    <i class="fas fa-eraser"></i> Effacer
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Enregistrer
+                </button>
+            </div>
+        </form>
+        
+        <!-- Notes explicatives -->
+        <div class="form-notes">
+            <p><strong>* Titre Article :</strong> Extrait d'ouvrage collectif, Extrait d'acte de congrès, Extrait de périodique</p>
+            <p><strong>** Titre Source :</strong> Titre du périodique, Titre d'acte de congrès, Titre monographie, Titre d'ouvrage collectif</p>
+        </div>
+    </div>
+{% endblock %} {% endcomment %}
+
+{% load static %}
+{% block content %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/collecte/collecte.css' %}">
+  <link rel="stylesheet" href="{% static 'css/search.css' %}">
+  <link rel="stylesheet" href="{% static 'css/form.css' %}">
+{% endblock %}
+
+<div class="collect-section">
+    <h2><i class="fas fa-clipboard-list"></i> Collecte</h2>
+
+    <div class="collect-buttons">
+        <button type="button" onclick="window.location.href='{% url 'periodique_protected' %}'">
+            <i class="fas fa-calendar-alt"></i> Periodique
+        </button>
+        <button type="button" onclick="window.location.href='{% url 'monographie_login' %}'">
+            <i class="fas fa-book"></i> Monographie
+        </button>
+        <button type="button" onclick="window.location.href='{% url 'indexeur_login' %}'">
+            <i class="fas fa-user-check"></i> Indexeur
+        </button>
+        <button type="button" onclick="window.location.href='{% url 'indexationControl_login' %}'">
+            <i class="fas fa-tasks"></i> Indexation & Contrôle
+        </button>
+        <button type="button" onclick="window.location.href='{% url 'priseVue_login' %}'">
+            <i class="fas fa-camera"></i> Prise de Vue
+        </button>
+    </div>
+    
+    <hr>
+    
+    <h2>Enregistrement d'un periodique</h2>
+    
+    <div class="search-section">
+        <button type="button" onclick="window.location.href='{% url 'accueil' %}'">
+            <i class="fas fa-camera"></i> Editer
+        </button>
+        <form method="get" action="{% url 'resultats' %}">
+            <div class="search-input">
+                {{ formSearch.q }}
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Nouvelle section pour le formulaire d'article périodique -->
+    <div class="periodique-form-section">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="post" class="article-periodique-form">
+            {% csrf_token %}
+            
+            <!-- Section Informations de base -->
+            <div class="form-section">
+                <h3><i class="fas fa-info-circle"></i> Informations de base</h3>
+                
+                <!-- N° Enregistrement -->
+                <div class="form-group">
+                    {% if article_form.n_enregistrement.errors %}
+                    <div class="alert alert-error">{{ article_form.n_enregistrement.errors }}</div>
+                    {% endif %}
+                    <div class="field-row">
+                        {{ article_form.n_enregistrement.label_tag }}
+                        {{ article_form.n_enregistrement }}
+                    </div>
+                    <span class="help-text">/2023</span>
+                </div>
+                
+                <!-- Titre Article -->
+                <div class="form-group">
+                    {% if article_form.titre_article.errors %}
+                    <div class="alert alert-error">{{ article_form.titre_article.errors }}</div>
+                    {% endif %}
+                    <div class="field-row">
+                        {{ article_form.titre_article.label_tag }}
+                        {{ article_form.titre_article }}
+                    </div>
+                    <span class="help-text">{{ article_form.titre_article.help_text }}</span>
+                </div>
+                
+                <!-- Auteurs -->
+                <div class="form-group">
+                    {% if article_form.auteurs.errors %}
+                    <div class="alert alert-error">{{ article_form.auteurs.errors }}</div>
+                    {% endif %}
+                    <div class="field-row">
+                        {{ article_form.auteurs.label_tag }}
+                        {{ article_form.auteurs }}
+                    </div>
+                    <span class="help-text">{{ article_form.auteurs.help_text }}</span>
+                </div>
+                
+                <!-- Titre Source -->
+                <div class="form-group">
+                    {% if article_form.titre.errors %}
+                    <div class="alert alert-error">{{ article_form.titre.errors }}</div>
+                    {% endif %}
+                    <div class="field-row">
+                        {{ article_form.titre.label_tag }}
+                        {{ article_form.titre }}
+                    </div>
+                    <span class="help-text">{{ article_form.titre.help_text }}</span>
+                </div>
+            </div>
+            
+            <!-- Section Détails du périodique -->
+            <div class="form-section">
+                <h3><i class="fas fa-book-open"></i> Détails du périodique</h3>
+                
+                <!-- Volume -->
+                <div class="form-group">
+                    {% if article_form.vol.errors %}
+                    <div class="alert alert-error">{{ article_form.vol.errors }}</div>
+                    {% endif %}
+                    <div class="field-row">
+                        {{ article_form.vol.label_tag }}
+                        {{ article_form.vol }}
+                    </div>
+                </div>
+                
+                <!-- Tome -->
+                <div class="form-group">
+                    {% if article_form.tom.errors %}
+                    <div class="alert alert-error">{{ article_form.tom.errors }}</div>
+                    {% endif %}
+                    <div class="field-row">
+                        {{ article_form.tom.label_tag }}
+                        {{ article_form.tom }}
+                    </div>
+                </div>
+                
+                <!-- Numéro -->
+                <div class="form-group">
+                    {% if article_form.num.errors %}
+                    <div class="alert alert-error">{{ article_form.num.errors }}</div>
+                    {% endif %}
+                    <div class="field-row">
+                        {{ article_form.num.label_tag }}
+                        {{ article_form.num }}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section Métadonnées -->
+            <div class="form-section">
+                <h3><i class="fas fa-calendar-alt"></i> Métadonnées</h3>
+                
+                <!-- Date édition + Pagination -->
+                <div class="form-row">
+                    <!-- Date édition -->
+                    <div class="form-group">
+                        {% if article_form.date_edition.errors %}
+                        <div class="alert alert-error">{{ article_form.date_edition.errors }}</div>
+                        {% endif %}
+                        <div class="field-row">
+                            {{ article_form.date_edition.label_tag }}
+                            {{ article_form.date_edition }}
+                        </div>
+                        <span class="help-text">{{ article_form.date_edition.help_text }}</span>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="form-group">
+                        {% if article_form.pages.errors %}
+                        <div class="alert alert-error">{{ article_form.pages.errors }}</div>
+                        {% endif %}
+                        <div class="field-row">
+                            {{ article_form.pages.label_tag }}
+                            {{ article_form.pages }}
+                        </div>
+                        <span class="help-text">{{ article_form.pages.help_text }}</span>
+                    </div>
+                </div>
+                
+                <!-- Domaine + Langue -->
+                <div class="form-row">
+                    <!-- Domaine -->
+                    <div class="form-group">
+                        {% if article_form.domaine.errors %}
+                        <div class="alert alert-error">{{ article_form.domaine.errors }}</div>
+                        {% endif %}
+                        <div class="field-row">
+                            {{ article_form.domaine.label_tag }}
+                            {{ article_form.domaine }}
+                        </div>
+                    </div>
+                    
+                    <!-- Langue -->
+                    <div class="form-group">
+                        {% if article_form.langue.errors %}
+                        <div class="alert alert-error">{{ article_form.langue.errors }}</div>
+                        {% endif %}
+                        <div class="field-row">
+                            {{ article_form.langue.label_tag }}
+                            {{ article_form.langue }}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Source expéditrice -->
+                <div class="form-group">
+                    {% if article_form.source_expeditrice.errors %}
+                    <div class="alert alert-error">{{ article_form.source_expeditrice.errors }}</div>
+                    {% endif %}
+                    <div class="field-row">
+                        {{ article_form.source_expeditrice.label_tag }}
+                        {{ article_form.source_expeditrice }}
+                    </div>
+                </div>
+                
+                <!-- Type acquisition -->
+                <div class="form-group">
+                    {% if article_form.type_acquisition.errors %}
+                    <div class="alert alert-error">{{ article_form.type_acquisition.errors }}</div>
+                    {% endif %}
+                    <div class="field-row">
+                        {{ article_form.type_acquisition.label_tag }}
+                        {{ article_form.type_acquisition }}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section Suivi -->
+            <div class="form-section">
+                <h3><i class="fas fa-user-tie"></i> Suivi</h3>
+                
+                <!-- Date réception + Responsable -->
+                <div class="form-row">
+                    <!-- Date réception -->
+                    <div class="form-group">
+                        {% if article_form.date_reception.errors %}
+                        <div class="alert alert-error">{{ article_form.date_reception.errors }}</div>
+                        {% endif %}
+                        <div class="field-row">
+                            {{ article_form.date_reception.label_tag }}
+                            {{ article_form.date_reception }}
+                        </div>
+                        <span class="help-text">{{ article_form.date_reception.help_text }}</span>
+                    </div>
+                    
+                    <!-- Responsable saisie -->
+                    <div class="form-group">
+                        {% if article_form.responsable_saisie.errors %}
+                        <div class="alert alert-error">{{ article_form.responsable_saisie.errors }}</div>
+                        {% endif %}
+                        <div class="field-row">
+                            {{ article_form.responsable_saisie.label_tag }}
+                            {{ article_form.responsable_saisie }}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Date saisie + Date envoi -->
+                <div class="form-row">
+                    <!-- Date saisie -->
+                    <div class="form-group">
+                        {% if article_form.date_saisie.errors %}
+                        <div class="alert alert-error">{{ article_form.date_saisie.errors }}</div>
+                        {% endif %}
+                        <div class="field-row">
+                            {{ article_form.date_saisie.label_tag }}
+                            {{ article_form.date_saisie }}
+                        </div>
+                        <span class="help-text">{{ article_form.date_saisie.help_text }}</span>
+                    </div>
+                    
+                    <!-- Date envoi -->
+                    <div class="form-group">
+                        {% if article_form.date_envoi.errors %}
+                        <div class="alert alert-error">{{ article_form.date_envoi.errors }}</div>
+                        {% endif %}
+                        <div class="field-row">
+                            {{ article_form.date_envoi.label_tag }}
+                            {{ article_form.date_envoi }}
+                        </div>
+                        <span class="help-text">{{ article_form.date_envoi.help_text }}</span>
+                    </div>
+                </div>
+                
+                <!-- Ville édition + Éditeur -->
+                <div class="form-row">
+                    <!-- Ville édition -->
+                    {% comment %} <div class="form-group">
+                        {% if article_form.ville_edition.errors %}
+                        <div class="alert alert-error">{{ article_form.ville_edition.errors }}</div>
+                        {% endif %}
+                        <div class="field-row">
+                            {{ article_form.ville_edition.label_tag }}
+                            {{ article_form.ville_edition }}
+                        </div>
+                    </div> {% endcomment %}
+                    
+                    <!-- Éditeur -->
+                    {% comment %} <div class="form-group">
+                        {% if article_form.editeur.errors %}
+                        <div class="alert alert-error">{{ article_form.editeur.errors }}</div>
+                        {% endif %}
+                        <div class="field-row">
+                            {{ article_form.editeur.label_tag }}
+                            {{ article_form.editeur }}
+                        </div>
+                    </div> {% endcomment %}
+                </div>
+            </div>
+            
+            <!-- Boutons d'action -->
+            <div class="form-actions">
+                <button type="reset" class="effacer">
+                    <i class="fas fa-eraser"></i> Effacer
+                </button>
+                <button type="submit" class="enregistrer">
+                    <i class="fas fa-save"></i> Enregistrer
+                </button>
+            </div>
+        </form>
+        
+        <!-- Notes explicatives -->
+        <div class="form-notes">
+            <p><strong>* Titre Article :</strong> Extrait d'ouvrage collectif, Extrait d'acte de congrès, Extrait de périodique</p>
+            <p><strong>** Titre Source :</strong> Titre du périodique, Titre d'acte de congrès, Titre monographie, Titre d'ouvrage collectif</p>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -67,6 +67,27 @@
       .periodic-label i {
         font-size: 1rem;
       }
+      .non-periodic-label {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: #3cde5fff; /* bleu bootstrap */
+        color: white;
+        font-weight: 600;
+        font-size: 0.8rem;
+        padding: 4px 10px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: default;
+        user-select: none;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      }
+
+      .non-periodic-label i {
+        font-size: 1rem;
+      }
     </style>
   {% endblock %}
 
@@ -120,7 +141,7 @@
                   <i class="fas fa-calendar-alt"></i> Périodique
                 </div>
               {% else %}
-                <div class="periodic-label" title="Document non périodique">
+                <div class="non-periodic-label" title="Document non périodique">
                   <i class="fas fa-file-alt"></i> Non périodique
                 </div>
               {% endif %}
@@ -143,11 +164,11 @@
                       <td class="value">{{ doc.source }}</td>
                     </tr>
                     <tr>
-                        <td class="label">Vol</td>
+                        <td class="label">Volume</td>
                         <td class="value">{{ doc.vol }}</td>
                     </tr>
                     <tr>
-                        <td class="label">Tom</td>
+                        <td class="label">Tome</td>
                         <td class="value">{{ doc.tom }}</td>
                     </tr>
                     <tr>

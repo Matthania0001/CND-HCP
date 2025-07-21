@@ -239,27 +239,28 @@ class ArticlePeriodiqueForm(forms.Form):
     # Section 1: Informations de base
     n_enregistrement = forms.IntegerField(
         label="N° Enregistrement",
-        help_text="/2023"
+        help_text="/2023",
+        widget=forms.NumberInput(attrs={'class': 'form-input'})
     )
     
     titre_article = forms.CharField(
         label="Titre Article*",
         max_length=200,
-        widget=forms.TextInput(attrs={'size': '100'}),
-        help_text="Extrait d'ouvrage collectif, Extrait d'acte de congrès, Extrait de périodique"
+        widget=forms.TextInput(attrs={'size': '100', 'class': 'form-input'}),
+        help_text="Extrait d'ouvrage collectif, Extrait d'acte de congrès, Extrait de périodique",
     )
     
     auteurs = forms.CharField(
         label="Auteur/Collectivité",
         max_length=255,
-        widget=forms.TextInput(attrs={'size': '100'}),
+        widget=forms.TextInput(attrs={'size': '100', 'class': 'form-input'}),
         help_text="Séparer les auteurs par des /"
     )
     
     titre = forms.CharField(
         label="Titre Source**",
         max_length=200,
-        widget=forms.TextInput(attrs={'size': '100'}),
+        widget=forms.TextInput(attrs={'size': '100', 'class': 'form-input'}),
         help_text="Titre du document générique"
     )
     
@@ -267,100 +268,111 @@ class ArticlePeriodiqueForm(forms.Form):
     vol = forms.CharField(
         label="Volume",
         max_length=25,
-        widget=forms.TextInput(attrs={'size': '10'}))
+        widget=forms.TextInput(attrs={'size': '10', 'class': 'form-input'}))
     
     tom = forms.CharField(
         label="Tome",
         max_length=25,
-        widget=forms.TextInput(attrs={'size': '10'}))
+        widget=forms.TextInput(attrs={'size': '10', 'class': 'form-input'}))
     
     num = forms.CharField(
         label="N°",
         max_length=25,
-        widget=forms.TextInput(attrs={'size': '10'}))
+        widget=forms.TextInput(attrs={'size': '10', 'class': 'form-input'}))
     
     # Section 3: Dates et métadonnées
     date_edition = forms.DateField(
         label="Date d'édition",
         input_formats=['%Y-%m-%d'],
-        help_text="Format: AAAA-MM-JJ"
+        help_text="Format: AAAA-MM-JJ",
+        widget=forms.DateInput(attrs={'class': 'form-input'})
     )
     
     pages = forms.CharField(
         label="Pagination (p.)",
         max_length=30,
         required=False,
-        help_text="ex: 20-25"
+        help_text="ex: 20-25",
+        widget=forms.TextInput(attrs={'class': 'form-input'})
     )
     
     domaine = forms.ModelChoiceField(
         queryset=Domaine.objects.all(),
         label="Domaine",
-        to_field_name="domaine"
+        to_field_name="domaine",
+        widget=forms.Select(attrs={'class': 'form-input'})
     )
     
     LANGUE_CHOICES = [
-        ('fr', 'Français'),
-        ('ar', 'Arabe'),
-        ('en', 'Anglais'),
-        ('es', 'Espagnol')
+        ('Fr', 'Français'),
+        ('Ar', 'Arabe'),
+        ('En', 'Anglais'),
+        ('Es', 'Espagnol')
     ]
     
     langue = forms.ChoiceField(
         choices=LANGUE_CHOICES,
-        label="Langue"
+        label="Langue",
+        widget=forms.Select(attrs={'class': 'form-input'})
     )
     
     source_expeditrice = forms.ModelChoiceField(
         queryset=Source.objects.all(),
         label="Source Expéditrice",
-        to_field_name="source"
+        to_field_name="source",
+        widget=forms.Select(attrs={'class': 'form-input'})
     )
     
     TYPE_ACQUISITION = [
-        ('achat', 'Achat'),
-        ('don', 'Don'),
-        ('échange', 'Échange'),
-        ('abonnement', 'Abonnement')
+    ('Achat', 'Achat'),
+    ('Don', 'Don'),
+    ('Dépôt obligatoire', 'Dépôt obligatoire'),  # Correction : "Dépot" → "Dépôt"
+    ('Prêt', 'Prêt')  # Correction : "Pret" → "Prêt"
     ]
-    
+
     type_acquisition = forms.ChoiceField(
         choices=TYPE_ACQUISITION,
-        label="Type d'acquisition"
+        label="Type d'acquisition",  # Correct (pas de correction nécessaire)
+        widget=forms.Select(attrs={'class': 'form-input'})
     )
     
     date_reception = forms.DateField(
         label="Date de réception",
         input_formats=['%Y-%m-%d'],
-        help_text="Format: AAAA-MM-JJ"
+        help_text="Format: AAAA-MM-JJ",
+        widget=forms.DateInput(attrs={'class': 'form-input'})
     )
     
     responsable_saisie = forms.CharField(
         label="Responsable de saisie",
         max_length=100,
-        widget=forms.TextInput(attrs={'size': '50'}))
+        widget=forms.TextInput(attrs={'size': '50', 'class': 'form-input'}))
     
     date_saisie = forms.DateField(
         label="Date de saisie",
         input_formats=['%Y-%m-%d'],
-        help_text="Format: AAAA-MM-JJ"
+        help_text="Format: AAAA-MM-JJ",
+        widget=forms.DateInput(attrs={'class': 'form-input'})
     )
     
     date_envoi = forms.DateField(
         label="Date d'envoi au traitement",
         input_formats=['%Y-%m-%d'],
-        help_text="Format: AAAA-MM-JJ"
+        help_text="Format: AAAA-MM-JJ",
+        widget=forms.DateInput(attrs={'class': 'form-input'})
     )
     
     ville_edition = forms.CharField(
         label="Ville d'édition",
         max_length=60,
-        required=False
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-input'})
     )
     
     editeur = forms.ModelChoiceField(
         queryset=Editeur.objects.all(),
         label="Éditeur",
         to_field_name="editeur",
-        required=False
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-input'})
     )

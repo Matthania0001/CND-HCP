@@ -67,6 +67,31 @@ from django.shortcuts import render, redirect
 from django.views import View
 from .forms import SearchForm
 
+# class PeriodiqueProtectedView(View):
+#     template_name = 'periodique.html'
+
+#     def dispatch(self, request, *args, **kwargs):
+#         # Vérification stricte + suppression du token
+#         if not request.session.get('periodique_auth_token'):
+#             return redirect('periodique_login')
+
+#         token = request.session.pop('periodique_auth_token', None)
+#         if not token:
+#             return redirect('periodique_login')
+
+#         return super().dispatch(request, *args, **kwargs)
+
+#     def get(self, request):
+#         # Initialisation du formulaire avec GET existant (auto remplit)
+#         formSearch = SearchForm(request.GET or None)
+#         return render(request, self.template_name, {'formSearch': formSearch})
+
+from django.shortcuts import render, redirect
+from django.views import View
+from .forms import ArticlePeriodiqueForm, SearchForm
+from django.contrib import messages
+from Main.models import Doc, Ecriture, Edition, Fournit, Collecte, Suivi
+
 class PeriodiqueProtectedView(View):
     template_name = 'periodique.html'
 
@@ -82,9 +107,88 @@ class PeriodiqueProtectedView(View):
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request):
-        # Initialisation du formulaire avec GET existant (auto remplit)
+        # Initialisation des formulaires
         formSearch = SearchForm(request.GET or None)
-        return render(request, self.template_name, {'formSearch': formSearch})
+        article_form = ArticlePeriodiqueForm()
+        
+        context = {
+            'formSearch': formSearch,
+            'article_form': article_form,
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request):
+        article_form = ArticlePeriodiqueForm(request.POST)
+        formSearch = SearchForm(request.GET or None)
+        
+        if article_form.is_valid():
+            try:
+                # Sauvegarde dans la table Doc
+                doc = Doc.objects.create(
+                    n_enregistrement=article_form.cleaned_data['n_enregistrement'],
+                    titre=article_form.cleaned_data['titre'],
+                    titre_article=article_form.cleaned_data['titre_article'],
+                    periodicite='p',  # Périodique
+                    vol=article_form.cleaned_data['vol'],
+                    tom=article_form.cleaned_data['tom'],
+                    num=article_form.cleaned_data['num'],
+                    pages=article_form.cleaned_data['pages'],
+                    domaine=article_form.cleaned_data['domaine'].domaine,
+                    statut='collecte',
+                    lang=article_form.cleaned_data['langue'],
+                )
+                
+                # Gestion des auteurs (séparés par /)
+                auteurs = article_form.cleaned_data['auteurs'].split('/')
+                for auteur in auteurs:
+                    if auteur.strip():  # Ignore les chaînes vides
+                        Ecriture.objects.create(
+                            auteur=auteur.strip(),
+                            n_enregistrement=doc.n_enregistrement
+                        )
+                
+                # Sauvegarde dans Edition
+                if article_form.cleaned_data['editeur']:
+                    Edition.objects.create(
+                        editeur=article_form.cleaned_data['editeur'].editeur,
+                        n_enregistrement=doc.n_enregistrement,
+                    )
+                
+                # Sauvegarde dans Fournit
+                Fournit.objects.create(
+                    source=article_form.cleaned_data['source_expeditrice'].source,
+                    n_enregistrement=doc.n_enregistrement,
+                    date_reception=article_form.cleaned_data['date_reception'],
+                    obligation=article_form.cleaned_data['type_acquisition']
+                )
+                
+                # Sauvegarde dans Collecte
+                Collecte.objects.create(
+                    nomrc=article_form.cleaned_data['responsable_saisie'],
+                    n_enregistrement=doc.n_enregistrement,
+                    datsaisi_c=article_form.cleaned_data['date_saisie']
+                )
+                
+                # Sauvegarde dans Suivi
+                Suivi.objects.create(
+                    noms=article_form.cleaned_data['responsable_saisie'],
+                    n_enregistrement=doc.n_enregistrement,
+                    datenvoi_t=article_form.cleaned_data['date_envoi']
+                )
+                
+                messages.success(request, "L'article périodique a été enregistré avec succès!")
+                return redirect('periodique')
+            
+            except Exception as e:
+                messages.error(request, f"Une erreur est survenue: {str(e)}")
+        
+        # Si le formulaire n'est pas valide ou erreur d'enregistrement
+        context = {
+            'formSearch': formSearch,
+            'article_form': article_form,
+        }
+        return render(request, self.template_name, context)
+
 
 
 def periodique_logout(request):

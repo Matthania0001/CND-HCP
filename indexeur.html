@@ -1,0 +1,60 @@
+<html>
+<head>
+<title>AFFECTATION DES DOCUMENTS </title>
+</head>
+<body background="back.gif" text="#0c3173">
+<CENTER><img src="cnd.gif" alt="Le Centre National de Documentation" border="0" WIDTH="775" HEIGHT="79"></a></td>
+</CENTER>
+<table width="80%" border="0">
+<tr><td>
+<h3 align="center"><b><a href="index.php3"><font color="#0c3173">Accueil</a></b></h3>
+</td></tr>
+</table>
+
+<br><br>
+<form method="post" action="indexeur.php3" name="form1">
+
+<table width="100%" border="0" cellpadding="3">
+
+<tr>
+<td width="50%">N° Enregistrement</td>
+<td width="50%">
+<select name="isbn">
+<!-- Les options seraient dynamiquement générées en PHP -->
+<option value="-1">Sélectionnez</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td width="50%">Nom de l'indexeur</td>
+<td width="50%">
+<input type="text" name="nom_index" size="80" maxlength="100">
+</td>
+</tr>
+
+</table>
+<br><br>
+<table width="100%" border="0">
+<tr>
+<td align="right">
+<input type="submit" name="envoyer" value="Ajouter">
+</td>
+</tr>
+</table><br><br>
+<center><a href="#test"></a><input type="submit" name="liste" value="Nombre de documents a indexe pour chaque indexeur" width="4"> </center>
+</form>
+
+<!-- Cette partie serait générée dynamiquement après clic sur le bouton liste -->
+
+<br><br><br>
+<table width="400" border="5" ALIGN=center>
+<tr><th>Indexeur</th><th>Nombre</th></tr>
+<tr>
+<td><a name="table">Nom Indexeur</a></td>
+<td><a href='list_index.php3?id=NomIndexeur'>Nombre</a></td>
+</tr>
+</table><br/>
+
+</body>
+</html>
