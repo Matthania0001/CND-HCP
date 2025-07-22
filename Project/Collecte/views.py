@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+from datetime import datetime
 # Create your views here.
 def collecte(request):
     return render(request, 'collecte.html')
@@ -14,7 +14,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.db import connection
 from django.views import View
-from .forms import PeriodiqueForm, MonographieForm, IndexeurForm, IndexationControlForm, PriseVueForm, SearchForm, IndexeurContentForm
+from .forms import PeriodiqueForm, MonographieForm, IndexeurForm, IndexationControlForm, PriseVueForm, SearchForm, IndexeurContentForm, IndexationControlContentForm
 
 class PeriodiqueAuthView(View):
     template_name = 'logins/periodique.html'
@@ -263,7 +263,7 @@ class MonographieProtectedView(View):
                     n_enregistrement=monographie_form.cleaned_data['n_enregistrement'],
                     titre=monographie_form.cleaned_data['titre'],
                     titre_article=monographie_form.cleaned_data['titre_article'],
-                    periodicite='p',  # Périodique
+                    periodicite=monographie_form.cleaned_data['type'],  
                     vol=monographie_form.cleaned_data['vol'],
                     tom=monographie_form.cleaned_data['tom'],
                     num=monographie_form.cleaned_data['num'],
@@ -384,7 +384,7 @@ class IndexeurProtectedView(View):
             try:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "INSERT INTO indexation (n_enregistrement, nomi) VALUES (%s, %s)",[formIndexeur.cleaned_data['n_enregistrement'], formIndexeur.cleaned_data['nomi']]
+                        "INSERT INTO indexeur (n_enregistrement, nomi) VALUES (%s, %s)",[formIndexeur.cleaned_data['n_enregistrement'], formIndexeur.cleaned_data['nomi']]
                     )
                     cursor.execute(
                         "UPDATE doc SET statut = 'suivi1' WHERE n_enregistrement = %s", [formIndexeur.cleaned_data['n_enregistrement']]
@@ -471,8 +471,172 @@ class IndexationControlProtectedView(View):
         return super().dispatch(request, *args, **kwargs)
     
     def get(self, request):
-        return render(request, self.template_name)
+        # Initialisation des formulaires
+        formSearch = SearchForm(request.GET or None)
+        formIndexationControlContent = IndexationControlContentForm()
+        
+        context = {
+            'formSearch': formSearch,
+            'formIndexationControlContent': formIndexationControlContent,
+        }
+        return render(request, self.template_name, context)
+    
+    def post(self, request):
+        formIndexationControlContent = IndexationControlContentForm(request.POST)
+        if formIndexationControlContent.is_valid():
+                try:
+                    n_enregistrement = formIndexationControlContent.cleaned_data['n_enregistrement']
+                    # Récupérer nomi depuis la table indexeur
+                    with connection.cursor() as cursor:
+                        cursor.execute(
+                            "SELECT nomi FROM indexeur WHERE n_enregistrement = %s", [n_enregistrement]
+                        )
+                        result = cursor.fetchone()
+                        if not result:
+                            messages.error(request, "Aucun indexeur trouvé pour ce document.")
+                            return render(request, self.template_name, {'formIndexationControlContent': formIndexationControlContent})
+                        nomi = result[0]
+                        # Insérer dans indexation
+                        cursor.execute(
+                            "INSERT INTO indexation (n_enregistrement, nomi, dat_reception, dat_indexation, dat_saisi, dat_envoi) VALUES (%s, %s, %s, %s, %s, %s)",
+                            [
+                                n_enregistrement,
+                                nomi,
+                                formIndexationControlContent.cleaned_data['dat_recep_pour_indexation'],
+                                datetime.today().strftime('%Y-%m-%d'),
+                                datetime.today().strftime('%Y-%m-%d'),
+                                formIndexationControlContent.cleaned_data['dat_envoi_control']
+                            ]
+                        )
+                        cursor.execute(
+                            """INSERT INTO control (
+                                n_enregistrement, 
+                                nomc, 
+                                dat_ctrl, 
+                                observation, 
+                                retourne, 
+                                dat_valid, 
+                                dat_recepc) VALUES (%s, %s, %s, %s, %s, %s, %s)""",
+                            [
+                                n_enregistrement,
+                                formIndexationControlContent.cleaned_data['nomc'],
+                                datetime.today().strftime('%Y-%m-%d'),
+                                formIndexationControlContent.cleaned_data['observation'],
+                                'Non',
+                                 # Partie enlever du formulaire
+                                # formIndexationControl.cleaned_data['dat_retour_correc'],
+                                datetime.today().strftime('%Y-%m-%d'),
+                                formIndexationControlContent.cleaned_data['dat_recep_pour_controle'],
+                            ]
+                        )
+                        cursor.execute(
+                                 "SELECT dat_rsuivi FROM controle WHERE n_enregistrement = %s",
+                                 [n_enregistrement]
+                             )
+                        result = cursor.fetchone()
+                        dat_rsuivi = result[0] if result else None
+                        cursor.execute(
+                            "UPDATE suivi SET noms = %s, datsaisi_c = %s, dat_rsuivi = %s WHERE n_enregistrement = %s",
+                            [
+                                formIndexationControlContent.cleaned_data['noms'],
+                                formIndexationControlContent.cleaned_data['dat_suivi'],
+                                dat_rsuivi,
+                                n_enregistrement
+                            ]
+                        )
+                 
+                    messages.success(request, "Document affecté avec succès!")
+                    return redirect('indexationControl_protected')
+                except Exception as e:
+                    messages.error(request, f"Erreur lors de l'affectation du document: {str(e)}")
+        return render(request, self.template_name, {'formIndexationControlContent': formIndexationControlContent})
+    # def post(self, request):
+    #     formIndexationControl1 = IndexationControlContentForm1(request.POST)
+    #     formIndexationControl2 = IndexationControlContentForm2(request.POST)
+    #     formIndexationControl3 = IndexationControlContentForm3(request.POST)
+    #     if formIndexationControl1.is_valid():
+    #         try:
+    #             n_enregistrement = formIndexationControl1.cleaned_data['n_enregistrement']
+    #             # Récupérer nomi depuis la table indexeur
+    #             with connection.cursor() as cursor:
+    #                 cursor.execute(
+    #                     "SELECT nomi FROM indexeur WHERE n_enregistrement = %s", [n_enregistrement]
+    #                 )
+    #                 result = cursor.fetchone()
+    #                 if not result:
+    #                     messages.error(request, "Aucun indexeur trouvé pour ce document.")
+    #                     return render(request, self.template_name, {'formIndexationControl': formIndexationControl1})
+    #                 nomi = result[0]
+    #                 # Insérer dans indexation
+    #                 cursor.execute(
+    #                     "INSERT INTO indexation (n_enregistrement, nomi, dat_reception, dat_indexation, dat_saisi, dat_envoi) VALUES (%s, %s, %s, %s, %s, %s)",
+    #                     [
+    #                         n_enregistrement,
+    #                         nomi,
+    #                         formIndexationControl1.cleaned_data['dat_recep'],
+    #                         formIndexationControl1.cleaned_data['dat_index'],
+    #                         formIndexationControl1.cleaned_data['dat_saisi'],
+    #                         formIndexationControl1.cleaned_data['dat_envoi']
+    #                     ]
+    #                 )
+    #             messages.success(request, "Document affecté avec succès!")
+    #             return redirect('indexationControl_protected')
+    #         except Exception as e:
+    #             messages.error(request, f"Erreur lors de l'affectation du document: {str(e)}")
 
+    #     if formIndexationControl2.is_valid():
+    #         try:
+    #             n_enregistrement = formIndexationControl2.cleaned_data['n_enregistrement']
+    #             # Récupérer nomi depuis la table indexeur
+    #             with connection.cursor() as cursor:
+    #                 cursor.execute(
+    #                     "INSERT INTO control (n_enregistrement, nomc, dat_ctrl, observation, retourne, dat_retour, dat_valid, visa, dat_recep_control) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+    #                     [
+    #                         n_enregistrement,
+    #                         formIndexationControl2.cleaned_data['nomc'],
+    #                         formIndexationControl2.cleaned_data['dat_control'],
+    #                         formIndexationControl2.cleaned_data['observation'],
+    #                         formIndexationControl2.cleaned_data['retour_correc'],
+    #                         formIndexationControl2.cleaned_data['dat_retour_correc'],
+    #                         formIndexationControl2.cleaned_data['dat_validation'],
+    #                         formIndexationControl2.cleaned_data['visa'],
+    #                         formIndexationControl2.cleaned_data['date_recep_control'],
+    #                     ]
+    #                 )
+    #             messages.success(request, "Document affecté avec succès!")
+    #             return redirect('indexationControl_protected')
+    #         except Exception as e:
+    #             messages.error(request, f"Erreur lors de l'affectation du document: {str(e)}")
+        
+    #     if formIndexationControl3.is_valid():
+    #         try:
+    #             n_enregistrement = formIndexationControl3.cleaned_data['n_enregistrement']
+    #             # Récupérer nomi depuis la table indexeur
+    #             with connection.cursor() as cursor:
+    #                 cursor.execute(
+    #                             "SELECT dat_rsuivi FROM controle WHERE n_enregistrement = %s",
+    #                             [n_enregistrement]
+    #                         )
+    #                 result = cursor.fetchone()
+    #                 dat_rsuivi = result[0] if result else None
+
+    #                 cursor.execute(
+    #                     "UPDATE suivi SET noms = %s, datsaisi_c = %s, datenvoi_sir = %s, dat_rsuivi = %s WHERE n_enregistrement = %s",
+    #                     [
+    #                         formIndexationControl3.cleaned_data['noms'],
+    #                         formIndexationControl3.cleaned_data['dat_suivi'],
+    #                         formIndexationControl3.cleaned_data['dat_envoi_SIR'],
+    #                         dat_rsuivi,
+    #                         n_enregistrement
+    #                     ]
+    #                 )
+    #             messages.success(request, "Document affecté avec succès!")
+    #             return redirect('indexationControl_protected')
+    #         except Exception as e:
+    #             messages.error(request, f"Erreur lors de l'affectation du document: {str(e)}")
+
+
+    #     return render(request, self.template_name, {'formIndexationControl': formIndexationControl1})
 
 def indexationControl_logout(request):
     request.session.flush()

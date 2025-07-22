@@ -3,26 +3,171 @@
 {% block content %}
 {% block css %}
   <link rel="stylesheet" href="{% static 'css/collecte/collecte.css' %}">
+  <link rel="stylesheet" href="{% static 'css/form.css' %}">
+  <link rel="stylesheet" href="{% static 'css/search.css' %}">
+  <link rel="stylesheet" href="{% static 'css/liste.css' %}">
 {% endblock %}
     <div class="collect-section">
-    <h2><i class="fas fa-clipboard-list"></i> Collecte</h2>
+        <h2><i class="fas fa-clipboard-list"></i> Collecte</h2>
 
-    <div class="collect-buttons">
-        <button type="button" onclick="window.location.href='{% url 'periodique_login' %}'">
-            <i class="fas fa-calendar-alt"></i> Periodique
-        </button>
-        <button type="button" onclick="window.location.href='{% url 'monographie_protected' %}'">
-            <i class="fas fa-book"></i> Monographie
-        </button>
-        <button type="button" onclick="window.location.href='{% url 'indexeur_login' %}'">
-            <i class="fas fa-user-check"></i> Indexeur
-        </button>
-        <button type="button" onclick="window.location.href='{% url 'indexationControl_login' %}'">
-            <i class="fas fa-tasks"></i> Indexation & Contrôle
-        </button>
-        <button type="button" onclick="window.location.href='{% url 'priseVue_login' %}'">
-            <i class="fas fa-camera"></i> Prise de Vue
-        </button>
-    </div>
+        <div class="collect-buttons">
+            <button type="button" onclick="window.location.href='{% url 'periodique_login' %}'">
+                <i class="fas fa-calendar-alt"></i> Periodique
+            </button>
+            <button type="button" onclick="window.location.href='{% url 'monographie_protected' %}'">
+                <i class="fas fa-book"></i> Monographie
+            </button>
+            <button type="button" onclick="window.location.href='{% url 'indexeur_login' %}'">
+                <i class="fas fa-user-check"></i> Indexeur
+            </button>
+            <button type="button" onclick="window.location.href='{% url 'indexationControl_login' %}'">
+                <i class="fas fa-tasks"></i> Indexation & Contrôle
+            </button>
+            <button type="button" onclick="window.location.href='{% url 'priseVue_login' %}'">
+                <i class="fas fa-camera"></i> Prise de Vue
+            </button>
+        </div>
+        <div class="search-section">
+            <button type="button" onclick="window.location.href='{% url 'accueil' %}'">
+                <i class="fas fa-camera"></i> Editer
+            </button>
+            <form method="get" action="{% url 'resultats' %}">
+                <div class="search-input">
+                    {{ formSearch.q }}
+                    <button type="submit"><i class="fas fa-search"></i></button>
+                </div>
+            </form>
+        </div>
+        <div class="periodique-form-section">
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <form method="post" class="article-periodique-form">
+                {% csrf_token %}
+                <div class="form-section">
+                    <h3><i class="fas fa-info-circle"></i> Indexation </h3>
+                    <div class="form-group">
+                        {% if formIndexationControlContent.num.errors %}
+                        <div class="alert alert-error">{{ formIndexationControlContent.num.errors }}</div>
+                            {% endif %}
+                            <div class="field-row">
+                                {{ formIndexationControlContent.num.label_tag }}
+                                {{ formIndexationControlContent.num }}
+                            </div>
+                            <span class="help-text">Selectionner les numéros d'enregistrement</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {% if formIndexationControlContent.dat_recep_pour_indexation.errors %}
+                        <div class="alert alert-error">{{ formIndexationControlContent.dat_recep_pour_indexation.errors }}</div>
+                            {% endif %}
+                            <div class="field-row">
+                                {{ formIndexationControlContent.dat_recep_pour_indexation.label_tag }}
+                                {{ formIndexationControlContent.dat_recep_pour_indexation }}
+                            </div>
+                            <span class="help-text">Date ou le document est recu pour indexation</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {% if formIndexationControlContent.dat_envoi_control.errors %}
+                        <div class="alert alert-error">{{ formIndexationControlContent.dat_envoi_control.errors }}</div>
+                            {% endif %}
+                            <div class="field-row">
+                                {{ formIndexationControlContent.dat_envoi_control.label_tag }}
+                                {{ formIndexationControlContent.dat_envoi_control }}
+                            </div>
+                            <span class="help-text"> Date ou le document est envoyé pour controle</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-section">
+                    <h3><i class="fas fa-info-circle"></i> Controle </h3>
+                    <div class="form-group">
+                        {% if formIndexationControlContent.dat_recep_pour_controle.errors %}
+                        <div class="alert alert-error">{{ formIndexationControlContent.dat_recep_pour_controle.errors }}</div>
+                            {% endif %}
+                            <div class="field-row">
+                                {{ formIndexationControlContent.dat_recep_pour_controle.label_tag }}
+                                {{ formIndexationControlContent.dat_recep_pour_controle }}
+                            </div>
+                            <span class="help-text">Date ou le document est recu pour controle</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {% if formIndexationControlContent.nomc.errors %}
+                        <div class="alert alert-error">{{ formIndexationControlContent.nomc.errors }}</div>
+                            {% endif %}
+                            <div class="field-row">
+                                {{ formIndexationControlContent.nomc.label_tag }}
+                                {{ formIndexationControlContent.nomc }}
+                            </div>
+                            <span class="help-text"> Nom du controleur </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {% if formIndexationControlContent.observation %}
+                        <div class="alert alert-error">{{ formIndexationControlContent.observation.errors }}</div>
+                            {% endif %}
+                            <div class="field-row">
+                                {{ formIndexationControlContent.observation.label_tag }}
+                                {{ formIndexationControlContent.observation }}
+                            </div>
+                            <span class="help-text">Notes et remarques du contrôleur</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {% if formIndexationControlContent.dat_envoi_suivi %}
+                        <div class="alert alert-error">{{ formIndexationControlContent.dat_envoi_suivi.errors }}</div>
+                            {% endif %}
+                            <div class="field-row">
+                                {{ formIndexationControlContent.dat_envoi_suivi.label_tag }}
+                                {{ formIndexationControlContent.dat_envoi_suivi }}
+                            </div>
+                            <span class="help-text">Date d'envoi au</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-section">
+                    <h3><i class="fas fa-info-circle"></i> Suivi </h3>
+                    <div class="form-group">
+                        {% if formIndexationControlContent.noms.errors %}
+                        <div class="alert alert-error">{{ formIndexationControlContent.noms.errors }}</div>
+                            {% endif %}
+                            <div class="field-row">
+                                {{ formIndexationControlContent.noms.label_tag }}
+                                {{ formIndexationControlContent.noms }}
+                            </div>
+                            <span class="help-text">Nom du responsable de suivi</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {% if formIndexationControlContent.dat_envoi_bibliotheque.errors %}
+                        <div class="alert alert-error">{{ formIndexationControlContent.dat_envoi_bibliotheque.errors }}</div>
+                            {% endif %}
+                            <div class="field-row">
+                                {{ formIndexationControlContent.dat_envoi_bibliotheque.label_tag }}
+                                {{ formIndexationControlContent.dat_envoi_bibliotheque }}
+                            </div>
+                            <span class="help-text"> Date d'envoi à la bibliothèque ou à la source expeditrice </span>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                    <button type="reset" class="effacer">
+                        <i class="fas fa-eraser"></i> Effacer
+                    </button>
+                    <button type="submit" class="enregistrer">
+                        <i class="fas fa-save"></i> Enregistrer
+                    </button>
+            </div>
+                </div>
+            </form>
+        </div>
     </div>
 {% endblock %}
