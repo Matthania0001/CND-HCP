@@ -516,3 +516,99 @@ class IndexeurContentForm(forms.Form):
         widget=forms.TextInput(attrs={'size': '50', 'class': 'form-input'}),
         help_text="Nom de l'indexeur qui a effectué la saisie"
     )
+    
+    
+class IndexationControlContentForm(forms.Form):
+    num = forms.ChoiceField(
+        label="N° d'enregistrement",
+        choices = [(num.n_enregistrement, num.n_enregistrement) for num in Doc.objects.all()],
+        widget=forms.Select(attrs={'class': 'form-input'})
+    )
+    
+    dat_recep = forms.DateField(
+        label="Date de réception",
+        input_formats=['%Y-%m-%d'],
+        help_text="Format: AAAA-MM-JJ",
+        widget=forms.DateInput(attrs={'class': 'form-input'})
+    )
+    
+    dat_index = forms.DateField(
+        label="Date de réception",
+        input_formats=['%Y-%m-%d'],
+        help_text="Format: AAAA-MM-JJ",
+        widget=forms.DateInput(attrs={'class': 'form-input'})
+    )
+    dat_saisi = forms.DateField(
+        label="Date de réception",
+        input_formats=['%Y-%m-%d'],
+        help_text="Format: AAAA-MM-JJ",
+        widget=forms.DateInput(attrs={'class': 'form-input'})
+    )
+    dat_envoi = forms.DateField(
+        label="Date de réception",
+        input_formats=['%Y-%m-%d'],
+        help_text="Format: AAAA-MM-JJ",
+        widget=forms.DateInput(attrs={'class': 'form-input'})
+    )
+    dat_recep_control = forms.DateField(
+        label="Date de réception au controle",
+        input_formats=['%Y-%m-%d'],
+        help_text="Format: AAAA-MM-JJ",
+        widget=forms.DateInput(attrs={'class': 'form-input'})
+    )
+    observation = forms.CharField(
+        label="Observation du contrôleur",
+        widget=forms.Textarea(attrs={
+            'rows': 3,
+            'cols': 50,
+            'class': 'form-input'
+        }),
+        help_text="Notes et remarques du contrôleur",
+        required=False
+    )
+    dat_control = forms.DateField(
+        label="Date de controle",
+        input_formats=['%Y-%m-%d'],
+        help_text="Format: AAAA-MM-JJ",
+        widget=forms.DateInput(attrs={'class': 'form-input'})
+    )
+    dat_retour_correc = forms.DateField(
+        label="Retour à la correction",
+        input_formats=['%Y-%m-%d'],
+        help_text="Format: AAAA-MM-JJ",
+        widget=forms.DateInput(attrs={'class': 'form-input'})
+    )
+    dat_validation = forms.DateField(
+        label="Date de validation",
+        input_formats=['%Y-%m-%d'],
+        help_text="Format: AAAA-MM-JJ",
+        widget=forms.DateInput(attrs={'class': 'form-input'})
+    )
+    visa = forms.CharField(
+        label="Visa du controlleur",
+        max_length=100,
+        widget=forms.TextInput(attrs={'size': '50', 'class': 'form-input'}),
+    )
+    dat_retour = forms.DateField(
+        label="Date de retour au suivi",
+        input_formats=['%Y-%m-%d'],
+        help_text="Format: AAAA-MM-JJ",
+        widget=forms.DateInput(attrs={'class': 'form-input'})
+    )
+    noms = forms.CharField(
+        label="Nom du responsable de suivi",
+        max_length=100,
+        widget=forms.TextInput(attrs={'size': '50', 'class': 'form-input'}),
+    )
+    dat_suivi = forms.DateField(
+        label="Date de suivi",
+        input_formats=['%Y-%m-%d'],
+        help_text="Format: AAAA-MM-JJ",
+        widget=forms.DateInput(attrs={'class': 'form-input'})
+    )
+    dat_envoi = forms.DateField(
+        label="Date d'envoi au SIR",
+        input_formats=['%Y-%m-%d'],
+        help_text="Format: AAAA-MM-JJ",
+        widget=forms.DateInput(attrs={'class': 'form-input'})
+    )

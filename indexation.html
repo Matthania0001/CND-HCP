@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SUIVI DE DOCUMENTS</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #0c3173;
+            background-color: #f0f0f0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        td {
+            padding: 8px;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 5px;
+        }
+        .section-title {
+            text-align: center;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        hr {
+            border: 1px solid #0c3173;
+            margin: 20px 0;
+        }
+        .submit-btn {
+            padding: 10px 20px;
+            background-color: #0c3173;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<center>
+    <h1>SUIVI DE DOCUMENTS</h1>
+</center>
+
+<div style="text-align: center; margin: 20px 0;">
+    <a href="#">Accueil</a> | 
+    <a href="#">Editer</a> | 
+    <a href="#">Recherche</a>
+</div>
+
+<form method="post" action="#">
+
+    <table>
+        <tr>
+            <td width="20%">N° Enregistrement</td>
+            <td width="50%">
+                <select name="isbn">
+                    <option value="">-- Sélectionner --</option>
+                    <option value="doc1">Document 1</option>
+                    <option value="doc2">Document 2</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+
+    <hr>
+
+    <div class="section-title">INDEXATION & SAISIE</div>
+    
+    <table>
+        <tr>
+            <td width="20%">Date de réception du document</td>
+            <td width="50%">
+                <input type="date" name="dat_recep"> (format: AAAA-MM-JJ)
+            </td>
+        </tr>
+        <tr>
+            <td>Date d'indexation</td>
+            <td><input type="date" name="dat_index"></td>
+        </tr>
+        <tr>
+            <td>Date de saisie</td>
+            <td><input type="date" name="dat_saisi"></td>
+        </tr>
+        <tr>
+            <td>Date d'envoi au contrôle</td>
+            <td><input type="date" name="dat_envoic"></td>
+        </tr>
+    </table>
+
+    <hr>
+
+    <div class="section-title">CONTROLE</div>
+    
+    <table>
+        <tr>
+            <td width="20%">Date de réception</td>
+            <td width="50%"><input type="date" name="dat_recep1"></td>
+        </tr>
+        <tr>
+            <td>Nom du contrôleur</td>
+            <td><input type="text" name="nom_ctrl"></td>
+        </tr>
+        <tr>
+            <td>Observation du contrôleur</td>
+            <td><textarea name="observation" rows="3"></textarea></td>
+        </tr>
+        <tr>
+            <td>Date de contrôle</td>
+            <td><input type="date" name="dat_ctrl"></td>
+        </tr>
+        <tr>
+            <td><input type="checkbox" name="correction"> Retour à la correction</td>
+            <td><input type="date" name="dat_correction"></td>
+        </tr>
+        <tr>
+            <td>Validé le</td>
+            <td><input type="date" name="dat_validation"></td>
+        </tr>
+        <tr>
+            <td>Visa du contrôleur</td>
+            <td><input type="text" name="visa"></td>
+        </tr>
+        <tr>
+            <td>Date de retour au suivi</td>
+            <td><input type="date" name="dat_retour"></td>
+        </tr>
+    </table>
+
+    <hr>
+
+    <div class="section-title">SUIVI</div>
+    
+    <table>
+        <tr>
+            <td width="20%">Nom du responsable de suivi</td>
+            <td width="50%"><input type="text" name="noms"></td>
+        </tr>
+        <tr>
+            <td>Date de saisie</td>
+            <td><input type="date" name="dat_saisi1"></td>
+        </tr>
+        <tr>
+            <td>Date d'envoi au SIR</td>
+            <td><input type="date" name="dat_envoi"></td>
+        </tr>
+    </table>
+
+    <div style="text-align: right; margin-top: 20px;">
+        <input type="submit" class="submit-btn" value="Ajouter">
+    </div>
+
+</form>
+
+</body>
+</html>
