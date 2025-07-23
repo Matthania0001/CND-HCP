@@ -159,7 +159,7 @@ class DomaineProtectedView(View):
         return render(request, self.template_name, context)
     
 class DocTypeSearchView(View):
-    template_name = 'list_doc.html'
+    template_name = 'list_doc_type.html'
     def get(self, request):
         form_search_doc_type = DocTypeSearchForm()
         formSearch = SearchForm(request.GET or None)
