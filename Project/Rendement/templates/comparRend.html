@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/collecte/collecte.css' %}">
+  <link rel="stylesheet" href="{% static 'css/search.css' %}">
+  <link rel="stylesheet" href="{% static 'css/form.css' %}">
+  <link rel="stylesheet" href="{% static 'css/form2.css' %}">
+{% endblock %}
+    <div class="collect-section">
+    <h2><i class="fas fa-tachometer-alt"></i> Rendement </h2>
+
+    <div class="collect-buttons">
+        <button type="button" onclick="window.location.href='{% url 'periodique_login' %}'">
+            <i class="fas fa-tachometer-alt"></i> Controle de rendement
+        </button>
+        <button type="button" onclick="window.location.href='{% url 'CompareRendement' %}'">
+            <i class="fas fa-chart-line"></i> Comparaison de rendement
+        </button>
+    </div>
+    <h2> Comparaison du Rendement </h2>
+    <div class="search-section">
+        <button type="button" onclick="window.location.href='{% url 'accueil' %}'">
+            <i class="fas fa-camera"></i> Editer
+        </button>
+        <form method="get" action="{% url 'resultats' %}">
+            <div class="search-input">
+                {{ formSearch.q }}
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </div>
+        </form>
+    </div>
+    <div class="periodique-form-section">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <form method="post" class="article-periodique-form">
+            {% csrf_token %}
+            <div class="form-section">
+                
+                <!-- N° Enregistrement -->
+                <div class="form-group">
+                    {% if form_compare.date.errors %}
+                    <div class="alert alert-error">{{form_compare.date.errors }}</div>
+                    {% endif %}
+                    {% if form_compare.de.errors %}
+                    <div class="alert alert-error">{{form_compare.de.errors }}</div>
+                    {% endif %}
+                    {% if form_compare.a.errors %}
+                    <div class="alert alert-error">{{form_compare.a.errors }}</div>
+                    {% endif %}
+                    <div class = "field-group">
+                        <div class="field-row-part">
+                            {{ form_compare.date.label_tag }}
+                            {{ form_compare.date }}
+                        </div>
+                        <div class = "field-with-help-text">
+                            <div class="field-row-part">
+                                {{ form_compare.de.label_tag }}
+                                {{ form_compare.de }}
+                            </div>
+                            <span class="help-text"> {{form_compare.de.help_text}}</span>
+                        </div>
+                        <div class = "field-with-help-text">
+                            <div class="field-row-part">
+                                {{ form_compare.a.label_tag }}
+                                {{ form_compare.a }}
+                            </div>
+                            <span class="help-text"> {{form_compare.a.help_text}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    {% if form_compare.nomi.errors %}
+                    <div class="alert alert-error">{{form_compare.nomi.errors }}</div>
+                    {% endif %}
+                    {% if form_compare.nomIndexeur.errors %}
+                    <div class="alert alert-error">{{form_compare.nomIndexeur.errors }}</div>
+                    {% endif %}
+                    <div class = "field-group">
+                        <div class="field-row-part">
+                            {{ form_compare.nomi.label_tag }}
+                            {{ form_compare.nomi }}
+                        </div>
+                        <div class = "field-with-help-text">
+                            <div class="field-row-part">
+                                {{ form_compare.nomIndexeur.label_tag }}
+                                {{ form_compare.nomIndexeur }}
+                            </div>
+                            <span class="help-text"> {{form_compare.nomIndexeur.help_text}}</span>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="enregistrer">
+                    <i class="fas fa-check-circle"></i> Valider
+                </button>
+            </div>
+        </form>
+    </div>
+    </div>
+{% endblock %}

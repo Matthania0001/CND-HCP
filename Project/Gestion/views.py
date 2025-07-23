@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.db import connection
 from django.views import View
-from .forms import SourceLoginForm, DomaineLoginForm, SourceSuppressionForm, SourceAjoutForm, DomaineSuppressionForm, DomaineAjoutForm
+from .forms import SourceLoginForm, DomaineLoginForm, SourceSuppressionForm, SourceAjoutForm, DomaineSuppressionForm, DomaineAjoutForm, DocTypeSearchForm
 from Collecte.forms import SearchForm
 from django.db import connection
 # Create your views here.
@@ -158,3 +158,10 @@ class DomaineProtectedView(View):
         }
         return render(request, self.template_name, context)
     
+class DocTypeSearchView(View):
+    template_name = 'list_doc.html'
+    def get(self, request):
+        form_search_doc_type = DocTypeSearchForm()
+        formSearch = SearchForm(request.GET or None)
+        return render(request, self.template_name, {'form_search_doc_type': form_search_doc_type,
+                                                    'formSearch': formSearch})

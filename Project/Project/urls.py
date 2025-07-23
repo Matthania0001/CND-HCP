@@ -22,5 +22,6 @@ urlpatterns = [
     path('accueil/', include('Accueil.urls')), 
     path('collecte/', include('Collecte.urls')), 
     path('gestion/', include('Gestion.urls')),
-    path('bilan/', include('Bilan.urls')), 
+    path('bilan/', include('Bilan.urls')),
+    path('rendement/', include('Rendement.urls')), 
 ]

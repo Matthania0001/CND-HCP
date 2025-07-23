@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/collecte/collecte.css' %}">
+  <link rel="stylesheet" href="{% static 'css/search.css' %}">
+  <link rel="stylesheet" href="{% static 'css/form.css' %}">
+  <link rel="stylesheet" href="{% static 'css/form2.css' %}">
+{% endblock %}
+    <div class="collect-section">
+    <h2><i class="fas fa-database"></i> Bilan </h2>
+
+    <div class="collect-buttons">
+        <button type="button" onclick="window.location.href='{% url 'listeDoc' %}'">
+            <i class="fas fa-search"></i> Listes des documents
+        </button>
+        <button type="button" onclick="window.location.href='{% url 'listeEts' %}'">
+            <i class="fas fa-plus-circle"></i> Liste des établissements
+        </button>
+    </div>
+    <h2> Liste des établissements </h2>
+    <div class="search-section">
+        <button type="button" onclick="window.location.href='{% url 'accueil' %}'">
+            <i class="fas fa-camera"></i> Editer
+        </button>
+        <form method="get" action="{% url 'resultats' %}">
+            <div class="search-input">
+                {{ formSearch.q }}
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </div>
+        </form>
+    </div>
+    <div class="periodique-form-section">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <form method="post" class="article-periodique-form">
+            {% csrf_token %}
+            <div class="form-section">
+                
+                <!-- N° Enregistrement -->
+                <div class="form-group">
+                    {% if form_search_ets.date.errors %}
+                    <div class="alert alert-error">{{form_search_ets.date.errors }}</div>
+                    {% endif %}
+                    {% if form_search_ets.de.errors %}
+                    <div class="alert alert-error">{{form_search_ets.de.errors }}</div>
+                    {% endif %}
+                    {% if form_search_ets.a.errors %}
+                    <div class="alert alert-error">{{form_search_ets.a.errors }}</div>
+                    {% endif %}
+                    <div class = "field-group">
+                        <div class="field-row-part">
+                            {{ form_search_ets.date.label_tag }}
+                            {{ form_search_ets.date }}
+                        </div>
+                        <div class = "field-with-help-text">
+                            <div class="field-row-part">
+                                {{ form_search_ets.de.label_tag }}
+                                {{ form_search_ets.de }}
+                            </div>
+                            <span class="help-text"> {{form_search_ets.de.help_text}}</span>
+                        </div>
+                        <div class = "field-with-help-text">
+                            <div class="field-row-part">
+                                {{ form_search_ets.a.label_tag }}
+                                {{ form_search_ets.a }}
+                            </div>
+                            <span class="help-text"> {{form_search_ets.a.help_text}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    {% if form_search_ets.type.errors %}
+                    <div class="alert alert-error">{{form_search_ets.type.errors }}</div>
+                    {% endif %}
+                    {% if form_search_doc.type_depot.errors %}
+                    <div class="alert alert-error">{{form_search_ets.type_depot.errors }}</div>
+                    {% endif %}
+                    <div class = "field-group">
+                        <div class="field-row-part">
+                            {{ form_search_ets.type.label_tag }}
+                            {{ form_search_ets.type }}
+                        </div>
+                        <div class = "field-with-help-text">
+                            <div class="field-row-part">
+                                {{ form_search_ets.type_depot.label_tag }}
+                                {{ form_search_ets.type_depot }}
+                            </div>
+                            <span class="help-text"> {{form_search_ets.type_depot.help_text}}</span>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="enregistrer">
+                    <i class="fas fa-check-circle"></i> Valider
+                </button>
+            </div>
+        </form>
+    </div>
+    </div>
+{% endblock %}

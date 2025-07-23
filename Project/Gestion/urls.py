@@ -6,6 +6,7 @@ urlpatterns = [
     path('domaine/', views.DomaineAuthView.as_view(), name = 'domaine_login'),
     path('source/protected/', views.SourceProtectedView.as_view(), name='source_protected'),
     path('domaine/protected/', views.DomaineProtectedView.as_view(), name='domaine_protected'),
+    path('listeDoc/', views.DocTypeSearchView.as_view(), name = 'listeDocType')
    
 ]
 

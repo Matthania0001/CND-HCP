@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/collecte/collecte.css' %}">
+  <link rel="stylesheet" href="{% static 'css/search.css' %}">
+  <link rel="stylesheet" href="{% static 'css/form.css' %}">
+  <link rel="stylesheet" href="{% static 'css/form2.css' %}">
+{% endblock %}
+    <div class="collect-section">
+    <h2><i class="fas fa-tachometer-alt"></i> Rendement </h2>
+
+    <div class="collect-buttons">
+        <button type="button" onclick="window.location.href='{% url 'periodique_login' %}'">
+            <i class="fas fa-tachometer-alt"></i> Controle de rendement
+        </button>
+        <button type="button" onclick="window.location.href='{% url 'CompareRendement' %}'">
+            <i class="fas fa-chart-line"></i> Comparaison de rendement
+        </button>
+    </div>
+    </div>
+{% endblock %}

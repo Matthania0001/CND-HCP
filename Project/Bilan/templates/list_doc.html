@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/collecte/collecte.css' %}">
+  <link rel="stylesheet" href="{% static 'css/search.css' %}">
+  <link rel="stylesheet" href="{% static 'css/form.css' %}">
+  <link rel="stylesheet" href="{% static 'css/form2.css' %}">
+{% endblock %}
+    <div class="collect-section">
+    <h2><i class="fas fa-database"></i> Bilan </h2>
+
+    <div class="collect-buttons">
+        <button type="button" onclick="window.location.href='{% url 'listeDoc' %}'">
+            <i class="fas fa-search"></i> Listes des documents
+        </button>
+        <button type="button" onclick="window.location.href='{% url 'listeEts' %}'">
+            <i class="fas fa-plus-circle"></i> Liste des établissements
+        </button>
+    </div>
+    <h2> Liste des documents </h2>
+    <div class="search-section">
+        <button type="button" onclick="window.location.href='{% url 'accueil' %}'">
+            <i class="fas fa-camera"></i> Editer
+        </button>
+        <form method="get" action="{% url 'resultats' %}">
+            <div class="search-input">
+                {{ formSearch.q }}
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </div>
+        </form>
+    </div>
+    <div class="periodique-form-section">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <form method="post" class="article-periodique-form">
+            {% csrf_token %}
+            <div class="form-section">
+                
+                <!-- N° Enregistrement -->
+                <div class="form-group">
+                    {% if form_search_doc.date.errors %}
+                    <div class="alert alert-error">{{form_search_doc.date.errors }}</div>
+                    {% endif %}
+                    {% if form_search_doc.de.errors %}
+                    <div class="alert alert-error">{{form_search_doc.de.errors }}</div>
+                    {% endif %}
+                    {% if form_search_doc.a.errors %}
+                    <div class="alert alert-error">{{form_search_doc.a.errors }}</div>
+                    {% endif %}
+                    <div class = "field-group">
+                        <div class="field-row-part">
+                            {{ form_search_doc.date.label_tag }}
+                            {{ form_search_doc.date }}
+                        </div>
+                        <div class = "field-with-help-text">
+                            <div class="field-row-part">
+                                {{ form_search_doc.de.label_tag }}
+                                {{ form_search_doc.de }}
+                            </div>
+                            <span class="help-text"> {{form_search_doc.de.help_text}}</span>
+                        </div>
+                        <div class = "field-with-help-text">
+                            <div class="field-row-part">
+                                {{ form_search_doc.a.label_tag }}
+                                {{ form_search_doc.a }}
+                            </div>
+                            <span class="help-text"> {{form_search_doc.a.help_text}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    {% if form_search_doc.domain.errors %}
+                    <div class="alert alert-error">{{form_search_doc.domain.errors }}</div>
+                    {% endif %}
+                    {% if form_search_doc.domaine.errors %}
+                    <div class="alert alert-error">{{form_search_doc.domaine.errors }}</div>
+                    {% endif %}
+                    <div class = "field-group">
+                        <div class="field-row-part">
+                            {{ form_search_doc.domain.label_tag }}
+                            {{ form_search_doc.domain }}
+                        </div>
+                        <div class = "field-with-help-text">
+                            <div class="field-row-part">
+                                {{ form_search_doc.domaine.label_tag }}
+                                {{ form_search_doc.domaine }}
+                            </div>
+                            <span class="help-text"> {{form_search_doc.domaine.help_text}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    {% if form_search_doc.src.errors %}
+                    <div class="alert alert-error">{{form_search_doc.src.errors }}</div>
+                    {% endif %}
+                    {% if form_search_doc.source.errors %}
+                    <div class="alert alert-error">{{form_search_doc.source.errors }}</div>
+                    {% endif %}
+                    <div class = "field-group">
+                        <div class="field-row-part">
+                            {{ form_search_doc.src.label_tag }}
+                            {{ form_search_doc.src }}
+                        </div>
+                        <div class = "field-with-help-text">
+                            <div class="field-row-part">
+                                {{ form_search_doc.source.label_tag }}
+                                {{ form_search_doc.source }}
+                            </div>
+                            <span class="help-text"> {{form_search_doc.source.help_text}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    {% if form_search_doc.stat.errors %}
+                    <div class="alert alert-error">{{form_search_doc.stat.errors }}</div>
+                    {% endif %}
+                    {% if form_search_doc.statut.errors %}
+                    <div class="alert alert-error">{{form_search_doc.statut.errors }}</div>
+                    {% endif %}
+                    <div class = "field-group">
+                        <div class="field-row-part">
+                            {{ form_search_doc.stat.label_tag }}
+                            {{ form_search_doc.stat }}
+                        </div>
+                        <div class = "field-with-help-text">
+                            <div class="field-row-part">
+                                {{ form_search_doc.statut.label_tag }}
+                                {{ form_search_doc.statut }}
+                            </div>
+                            <span class="help-text"> {{form_search_doc.statut.help_text}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="enregistrer">
+                    <i class="fas fa-check-circle"></i> Valider
+                </button>
+            </div>
+        </form>
+    </div>
+    </div>
+{% endblock %}
