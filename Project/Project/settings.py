@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'Recherche',
     'Statistiques',
     'Rendement',
+    'Bilan',
 ]
 
 MIDDLEWARE = [
