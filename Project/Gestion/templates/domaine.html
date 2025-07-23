@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/collecte/collecte.css' %}">
+  <link rel="stylesheet" href="{% static 'css/form.css' %}">
+  <link rel="stylesheet" href="{% static 'css/search.css' %}">
+{% endblock %}
+<div class="collect-section">
+    <h2><i class="fas fa-database"></i> Gestion</h2>
+
+    <div class="collect-buttons">
+        <button type="button" onclick="window.location.href='{% url 'periodique_login' %}'">
+            <i class="fas fa-search"></i> Document à Indexer
+        </button>
+        <button type="button" onclick="window.location.href='{% url 'source_login' %}'">
+            <i class="fas fa-plus-circle"></i> Ajouter/Supprimer une source
+        </button>
+        <button type="button" onclick="window.location.href='{% url 'domaine_login' %}'">
+            <i class="fas fa-tags"></i> Ajouter/Supprimer un domaine
+        </button>
+    </div>
+    <h2> Ajout ou Suppression d'un domaine </h2>
+        <div class="search-section">
+            <button type="button" onclick="window.location.href='{% url 'accueil' %}'">
+                <i class="fas fa-camera"></i> Editer
+            </button>
+            <form method="get" action="{% url 'resultats' %}">
+                <div class="search-input">
+                    {{ formSearch.q }}
+                    <button type="submit"><i class="fas fa-search"></i></button>
+                </div>
+            </form>
+        </div>
+        <div class="periodique-form-section">
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <form method="post" class="article-periodique-form">
+                {% csrf_token %}
+                <div class="form-section">
+                    <h3><i class="fas fa-info-circle"></i> Ajouter </h3>
+                    <div class="form-group">
+                        {% if domaine_form_ajt.nom_domaine.errors %}
+                        <div class="alert alert-error">{{ domaine_form_ajt.nom_domaine.errors }}</div>
+                            {% endif %}
+                            <div class="field-row">
+                                {{ domaine_form_ajt.nom_domaine.label_tag }}
+                                {{ domaine_form_ajt.nom_domaine }}
+                            </div>
+                            <span class="help-text">{{domaine_form_ajt.nom_domaine.help_text}}</span>
+                        
+                    </div>
+                </div>
+                <div class="form-actions">
+                        <button type="submit" class="enregistrer">
+                            <i class="fas fa-plus"></i> Ajouter
+                        </button>
+                </div>
+            </form>
+        </div>
+        <div class="periodique-form-section">
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <form method="post" class="article-periodique-form">
+                {% csrf_token %}
+                <div class="form-section">
+                    <h3><i class="fas fa-info-circle"></i> Suppression </h3>
+                    <div class="form-group">
+                        {% if domaine_form_sup.domaine.errors %}
+                        <div class="alert alert-error">{{ domaine_form_sup.domaine.errors }}</div>
+                            {% endif %}
+                            <div class="field-row">
+                                {{ domaine_form_sup.domaine.label_tag }}
+                                {{ domaine_form_sup.domaine }}
+                            </div>
+                            <span class="help-text">{{domaine_form_sup.domaine.help_text}}</span>
+                        
+                    </div>
+                </div>
+                <div class="form-actions">
+                        <button type="submit" class="enregistrer">
+                            <i class="fas fa-minus"></i> Supprimer
+                        </button>
+                </div>
+            </form>
+         </div>
+    </div>
+{% endblock %}

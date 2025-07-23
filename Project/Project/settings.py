@@ -82,11 +82,11 @@ WSGI_APPLICATION = 'Project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'collect',
+        'NAME': 'collecte',
         'USER': 'root',
-        'PASSWORD': 'django',
+        'PASSWORD': 'hcpcnd',
         'HOST': 'localhost',
-        'PORT': '3305',
+        'PORT': '3306',
         'OPTIONS': {
             'charset': 'utf8mb4',
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
