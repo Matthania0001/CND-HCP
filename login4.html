@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="windows-1256">
+    <title>Authentification administration</title>
+    <style>
+        body {
+            background-image: url('back.gif');
+            color: #0c3173;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .login-form {
+            width: 300px;
+            margin: 20px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .error-message {
+            color: #ff0000;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="password"] {
+            margin: 5px 0;
+            padding: 5px;
+        }
+        input[type="submit"] {
+            padding: 5px 15px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="cnd.gif" alt="Le Centre National de Documentation" width="775" height="79">
+        
+        <h3><a href="index.php3" style="color: #0c3173;">Accueil</a></h3>
+        
+        <h2>Authentification pour la partie administration :</h2>
+        
+        <div class="login-form">
+            <div class="error-message">[ERREUR_ICI]</div>
+            
+            <form action="login4.php3" method="post">
+                <input type="hidden" name="action" value="verify">
+                
+                <label for="login">Login :</label><br>
+                <input type="text" id="login" name="login"><br><br>
+                
+                <label for="pass">Mot de passe :</label><br>
+                <input type="password" id="pass" name="pass"><br><br>
+                
+                <input type="submit" value="Entrer">
+            </form>
+        </div>
+    </div>
+</body>
+</html>

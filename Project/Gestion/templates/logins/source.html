@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/collecte/collecte.css' %}">
+  <link rel="stylesheet" href="{% static 'css/collecte/periodique.css' %}">
+{% endblock %}
+    <div class="collect-section">
+    <h2><i class="fas fa-database"></i> Gestion</h2>
+
+    <div class="collect-buttons">
+        <button type="button" onclick="window.location.href='{% url 'periodique_login' %}'">
+            <i class="fas fa-search"></i> Document à Indexer
+        </button>
+        <button type="button" onclick="window.location.href='{% url 'source_login' %}'">
+            <i class="fas fa-plus-circle"></i> Ajouter/Supprimer une source
+        </button>
+        <button type="button" onclick="window.location.href='{% url 'domaine_login' %}'">
+            <i class="fas fa-tags"></i> Ajouter/Supprimer un domaine
+        </button>
+    </div>
+    {% if form_source %}
+        <div id="form-container" class="login-container">
+            <h3> Connexion à La base des Sources </h3>
+            
+            {% if messages %}
+            <div class="alert alert-danger">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+            </div>
+            {% endif %}
+            
+            <form method="post">
+            {% csrf_token %}
+            {% for f in form_source %}
+            <div class="form-group" style="position:relative;">
+                {{ f.label_tag }}
+                {{ f }}
+                {% if f.errors %}
+                <div class="text-danger" style="display: flex; align-items: center;">
+                    {{ f.errors }}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="login-button">Entrer</button>
+            </form>
+        </div>
+    {% endif %}
+    </div>
+{% endblock %}

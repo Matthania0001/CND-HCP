@@ -550,7 +550,6 @@ class IndexationControlContentForm(forms.Form):
             'class': 'form-input'
         }),
         help_text="Notes et remarques du contrôleur",
-        required=False
     )
     nomc = forms.CharField(
         label="Nom du controleur",
@@ -783,3 +782,24 @@ class IndexationControlContentForm(forms.Form):
 #             help_text="Format: AAAA-MM-JJ",
 #             widget=forms.DateInput(attrs={'class': 'form-input'})
 #         )
+
+
+
+class PriseDeVueContentForm(forms.Form):
+    num = forms.ChoiceField(
+        label="N° d'enregistrement",
+        choices = [(num.n_enregistrement, num.n_enregistrement) for num in Doc.objects.all()],
+        widget=forms.Select(attrs={'class': 'form-input'})
+    )
+    dat_recep_vue = forms.DateField(
+        label="Date de reception à la Numérisation",
+        input_formats=['%Y-%m-%d'],
+        help_text="Format: AAAA-MM-JJ",
+        widget=forms.DateInput(attrs={'class': 'form-input'})
+    )
+    dat_envoi_bibliotheque = forms.DateField(
+        label="Date de Sortie à la Numérisation",
+        input_formats=['%Y-%m-%d'],
+        help_text="Format: AAAA-MM-JJ",
+        widget=forms.DateInput(attrs={'class': 'form-input'})
+    )

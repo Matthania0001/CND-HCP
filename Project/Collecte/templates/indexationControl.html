@@ -27,6 +27,7 @@
                 <i class="fas fa-camera"></i> Prise de Vue
             </button>
         </div>
+        <h2>Indexation et contole</h2>
         <div class="search-section">
             <button type="button" onclick="window.location.href='{% url 'accueil' %}'">
                 <i class="fas fa-camera"></i> Editer
@@ -62,7 +63,7 @@
                                 {{ formIndexationControlContent.num }}
                             </div>
                             <span class="help-text">Selectionner les numéros d'enregistrement</span>
-                        </div>
+                        
                     </div>
                     <div class="form-group">
                         {% if formIndexationControlContent.dat_recep_pour_indexation.errors %}
@@ -73,7 +74,7 @@
                                 {{ formIndexationControlContent.dat_recep_pour_indexation }}
                             </div>
                             <span class="help-text">Date ou le document est recu pour indexation</span>
-                        </div>
+                        
                     </div>
                     <div class="form-group">
                         {% if formIndexationControlContent.dat_envoi_control.errors %}
@@ -84,54 +85,53 @@
                                 {{ formIndexationControlContent.dat_envoi_control }}
                             </div>
                             <span class="help-text"> Date ou le document est envoyé pour controle</span>
-                        </div>
+                        
                     </div>
                 </div>
                 <div class="form-section">
                     <h3><i class="fas fa-info-circle"></i> Controle </h3>
                     <div class="form-group">
                         {% if formIndexationControlContent.dat_recep_pour_controle.errors %}
-                        <div class="alert alert-error">{{ formIndexationControlContent.dat_recep_pour_controle.errors }}</div>
-                            {% endif %}
+                            <div class="alert alert-error">{{ formIndexationControlContent.dat_recep_pour_controle.errors }}</div>
+                        {% endif %}
                             <div class="field-row">
                                 {{ formIndexationControlContent.dat_recep_pour_controle.label_tag }}
                                 {{ formIndexationControlContent.dat_recep_pour_controle }}
                             </div>
                             <span class="help-text">Date ou le document est recu pour controle</span>
-                        </div>
                     </div>
                     <div class="form-group">
                         {% if formIndexationControlContent.nomc.errors %}
                         <div class="alert alert-error">{{ formIndexationControlContent.nomc.errors }}</div>
-                            {% endif %}
+                        {% endif %}
                             <div class="field-row">
                                 {{ formIndexationControlContent.nomc.label_tag }}
                                 {{ formIndexationControlContent.nomc }}
                             </div>
                             <span class="help-text"> Nom du controleur </span>
-                        </div>
+                        
                     </div>
                     <div class="form-group">
-                        {% if formIndexationControlContent.observation %}
-                        <div class="alert alert-error">{{ formIndexationControlContent.observation.errors }}</div>
-                            {% endif %}
+                        {% if formIndexationControlContent.observation.errors %}
+                            <div class="alert alert-error">{{ formIndexationControlContent.observation.errors }}</div>
+                        {% endif %}
                             <div class="field-row">
                                 {{ formIndexationControlContent.observation.label_tag }}
                                 {{ formIndexationControlContent.observation }}
                             </div>
                             <span class="help-text">Notes et remarques du contrôleur</span>
-                        </div>
+                        
                     </div>
                     <div class="form-group">
-                        {% if formIndexationControlContent.dat_envoi_suivi %}
+                        {% if formIndexationControlContent.dat_envoi_suivi.errors %}
                         <div class="alert alert-error">{{ formIndexationControlContent.dat_envoi_suivi.errors }}</div>
-                            {% endif %}
+                        {% endif %}
                             <div class="field-row">
                                 {{ formIndexationControlContent.dat_envoi_suivi.label_tag }}
                                 {{ formIndexationControlContent.dat_envoi_suivi }}
                             </div>
-                            <span class="help-text">Date d'envoi au</span>
-                        </div>
+                            <span class="help-text">Date d'envoi au suivi</span>
+                        
                     </div>
                 </div>
                 <div class="form-section">
@@ -145,7 +145,7 @@
                                 {{ formIndexationControlContent.noms }}
                             </div>
                             <span class="help-text">Nom du responsable de suivi</span>
-                        </div>
+                        
                     </div>
                     <div class="form-group">
                         {% if formIndexationControlContent.dat_envoi_bibliotheque.errors %}
@@ -156,16 +156,16 @@
                                 {{ formIndexationControlContent.dat_envoi_bibliotheque }}
                             </div>
                             <span class="help-text"> Date d'envoi à la bibliothèque ou à la source expeditrice </span>
-                        </div>
+                        
                     </div>
-                    <div class="form-actions">
-                    <button type="reset" class="effacer">
-                        <i class="fas fa-eraser"></i> Effacer
-                    </button>
-                    <button type="submit" class="enregistrer">
-                        <i class="fas fa-save"></i> Enregistrer
-                    </button>
-            </div>
+                </div>
+                <div class="form-actions">
+                        <button type="reset" class="effacer">
+                            <i class="fas fa-eraser"></i> Effacer
+                        </button>
+                        <button type="submit" class="enregistrer">
+                            <i class="fas fa-save"></i> Enregistrer
+                        </button>
                 </div>
             </form>
         </div>

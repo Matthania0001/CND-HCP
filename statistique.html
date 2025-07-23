@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recherche de documents</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #0c3173;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .nav {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .nav a {
+            color: #0c3173;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+        .search-form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .form-group label {
+            width: 150px;
+            font-weight: bold;
+        }
+        input[type="text"], select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            flex-grow: 1;
+        }
+        input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .date-inputs {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        button {
+            background-color: #0c3173;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0a2960;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="cnd.gif" alt="Centre National de Documentation" width="775" height="79">
+    </div>
+
+    <div class="nav">
+        <a href="index.php3">Accueil</a>
+        <a href="list.php3">Recherche</a>
+    </div>
+
+    <div class="search-form">
+        <h2 style="text-align: center;">LISTE DES DOCUMENTS</h2>
+        <hr>
+
+        <form method="post" action="search_stat.php3">
+            <!-- Filtre par date -->
+            <div class="form-group">
+                <input type="checkbox" id="date" name="date">
+                <label for="date">Durée:</label>
+                <div class="date-inputs">
+                    <span>De</span>
+                    <input type="date" name="de" placeholder="aaaa-mm-jj">
+                    <span>À</span>
+                    <input type="date" name="a" placeholder="aaaa-mm-jj">
+                </div>
+            </div>
+
+            <!-- Filtre par domaine -->
+            <div class="form-group">
+                <input type="checkbox" id="domain" name="domain">
+                <label for="domain">Domaine:</label>
+                <select name="domaine">
+                    <option value="-1">-- Sélectionnez un domaine --</option>
+                    <!-- Les options seraient générées dynamiquement en PHP -->
+                    <option value="1">Domaine 1</option>
+                    <option value="2">Domaine 2</option>
+                </select>
+            </div>
+
+            <!-- Filtre par source -->
+            <div class="form-group">
+                <input type="checkbox" id="src" name="src">
+                <label for="src">Source Expéditrice:</label>
+                <select name="source">
+                    <option value="-1">-- Sélectionnez une source --</option>
+                    <!-- Les options seraient générées dynamiquement en PHP -->
+                    <option value="1">Source 1</option>
+                    <option value="2">Source 2</option>
+                </select>
+            </div>
+
+            <!-- Filtre par statut -->
+            <div class="form-group">
+                <input type="checkbox" id="stat" name="stat">
+                <label for="stat">Statut:</label>
+                <select name="statut">
+                    <option value="-1">-- Sélectionnez un statut --</option>
+                    <option value="collecte">En collecte</option>
+                    <option value="suivi2">Indexé & Saisi</option>
+                    <option value="fini">Traité définitivement</option>
+                </select>
+            </div>
+
+            <div class="form-group" style="justify-content: flex-end;">
+                <button type="submit" name="valider">Valider</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

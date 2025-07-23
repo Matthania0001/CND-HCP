@@ -3,6 +3,8 @@
 {% block content %}
 {% block css %}
   <link rel="stylesheet" href="{% static 'css/collecte/collecte.css' %}">
+  <link rel="stylesheet" href="{% static 'css/form.css' %}">
+  <link rel="stylesheet" href="{% static 'css/search.css' %}">
 {% endblock %}
     <div class="collect-section">
     <h2><i class="fas fa-clipboard-list"></i> Collecte</h2>
@@ -24,5 +26,76 @@
             <i class="fas fa-camera"></i> Prise de Vue
         </button>
     </div>
+    <h2>Prise De Vue</h2>
+    <div class="search-section">
+        <button type="button" onclick="window.location.href='{% url 'accueil' %}'">
+            <i class="fas fa-camera"></i> Editer
+        </button>
+        <form method="get" action="{% url 'resultats' %}">
+            <div class="search-input">
+                {{ formSearch.q }}
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </div>
+        </form>
+    </div>
+    <div class="periodique-form-section">
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <form method="post" class="article-periodique-form">
+                {% csrf_token %}
+                <div class="form-section">
+                    <h3><i class="fas fa-info-circle"></i> Numérisation </h3>
+                    <div class="form-group">
+                        {% if formPriseDeVueContent.num.errors %}
+                        <div class="alert alert-error">{{ formPriseDeVueContent.num.errors }}</div>
+                            {% endif %}
+                            <div class="field-row">
+                                {{ formPriseDeVueContent.num.label_tag }}
+                                {{ formPriseDeVueContent.num }}
+                            </div>
+                            <span class="help-text">Selectionner les numéros d'enregistrement</span>
+                        
+                    </div>
+                    <div class="form-group">
+                        {% if formPriseDeVueContent.dat_recep_vue.errors %}
+                        <div class="alert alert-error">{{ formPriseDeVueContent.dat_recep_vue.errors }}</div>
+                            {% endif %}
+                            <div class="field-row">
+                                {{ formPriseDeVueContent.dat_recep_vue.label_tag }}
+                                {{ formPriseDeVueContent.dat_recep_vue }}
+                            </div>
+                            <span class="help-text">Date ou le document est recu pour numerisation</span>
+                        
+                    </div>
+                    <div class="form-group">
+                        {% if formPriseDeVueContent.dat_envoi_bibliotheque.errors %}
+                        <div class="alert alert-error">{{ formPriseDeVueContent.dat_envoi_bibliotheque.errors }}</div>
+                            {% endif %}
+                            <div class="field-row">
+                                {{ formPriseDeVueContent.dat_envoi_bibliotheque.label_tag }}
+                                {{ formPriseDeVueContent.dat_envoi_bibliotheque }}
+                            </div>
+                            <span class="help-text"> Date ou le document est envoyé à l'unité de suivi</span>
+                        
+                    </div>
+                </div>
+                <div class="form-actions">
+                        <button type="reset" class="effacer">
+                            <i class="fas fa-eraser"></i> Effacer
+                        </button>
+                        <button type="submit" class="enregistrer">
+                            <i class="fas fa-save"></i> Enregistrer
+                        </button>
+                </div>
+            </form>
+        </div>
     </div>
 {% endblock %}

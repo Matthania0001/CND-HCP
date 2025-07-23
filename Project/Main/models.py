@@ -51,7 +51,7 @@ class Control(models.Model):
     id = models.PositiveIntegerField(primary_key=True)
     nomc = models.CharField(max_length=100, null = False, default = '')  # The composite primary key (nomc, n_enregistrement) found, that is not supported. The first column is selected.
     dat_ctrl = models.DateField(null = False, default = '0000-00-00')
-    observation = models.CharField(max_length=200, blank=True, null=True)
+    observation = models.TextField(blank=True, null=True)#avant ;ax_length = 200
     retourne = models.CharField(max_length=3, null = False, default = '')
     dat_retour = models.DateField(blank=True, null=True)
     dat_valid = models.DateField(null = False,default = '0000-00-00')

@@ -14,7 +14,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.db import connection
 from django.views import View
-from .forms import PeriodiqueForm, MonographieForm, IndexeurForm, IndexationControlForm, PriseVueForm, SearchForm, IndexeurContentForm, IndexationControlContentForm
+from .forms import PeriodiqueForm, MonographieForm, PriseDeVueContentForm ,IndexeurForm, IndexationControlForm, PriseVueForm, SearchForm, IndexeurContentForm, IndexationControlContentForm
 
 class PeriodiqueAuthView(View):
     template_name = 'logins/periodique.html'
@@ -177,7 +177,7 @@ class PeriodiqueProtectedView(View):
                 )
                 
                 messages.success(request, "L'article périodique a été enregistré avec succès!")
-                return redirect('periodique')
+                return redirect('periodique_protected')
             
             except Exception as e:
                 messages.error(request, f"Une erreur est survenue: {str(e)}")
@@ -314,7 +314,7 @@ class MonographieProtectedView(View):
                 )
                 
                 messages.success(request, "L'article périodique a été enregistré avec succès!")
-                return redirect('periodique')
+                return redirect('monographie_protected')
             
             except Exception as e:
                 messages.error(request, f"Une erreur est survenue: {str(e)}")
@@ -536,12 +536,19 @@ class IndexationControlProtectedView(View):
                         result = cursor.fetchone()
                         dat_rsuivi = result[0] if result else None
                         cursor.execute(
-                            "UPDATE suivi SET noms = %s, datsaisi_c = %s, dat_rsuivi = %s WHERE n_enregistrement = %s",
+                            "UPDATE suivi SET noms = %s, datsaisi_ic = %s, dat_rsuivi = %s WHERE n_enregistrement = %s",
                             [
                                 formIndexationControlContent.cleaned_data['noms'],
-                                formIndexationControlContent.cleaned_data['dat_suivi'],
-                                dat_rsuivi,
+                                formIndexationControlContent.cleaned_data['dat_envoi_suivi'],
                                 n_enregistrement
+                            ]
+                        )
+                        cursor.execute(
+                            """
+                            UPDATE doc SET statut = %s WHERE n_enregistrement
+                            """,
+                            [
+                                "suivi2"
                             ]
                         )
                  
@@ -664,6 +671,7 @@ class PriseVueAuthView(View):
                     "SELECT 1 FROM admin WHERE login = %s AND pass = %s AND destination = 'vue'",
                     [username, password]
                 )
+                
                 if cursor.fetchone():
                     # Créer un token unique à chaque connexion
                     request.session['priseVue_auth_token'] = f"token_{username}_{request.session.session_key}"
@@ -688,9 +696,75 @@ class PriseVueProtectedView(View):
             return redirect('priseVue_login')
             
         return super().dispatch(request, *args, **kwargs)
-    
+    def post(self, request):
+        formPriseDeVueContentForm = PriseDeVueContentForm(request.POST)
+        if formPriseDeVueContentForm.is_valid():
+                try:
+                    n_enregistrement = formPriseDeVueContentForm.cleaned_data['n_enregistrement']
+                    # Récupérer nomi depuis la table indexeur
+                    with connection.cursor() as cursor:
+                        cursor.execute(
+                            "UPDATE suivi SET dat_pv = %s, dat_rrsuivi = %s, dat_mont = %s, datsaisi_pv = %s WHERE n_enregistrement = %s",
+                            [
+                                datetime.today().strftime('%Y-%m-%d'),
+                                formPriseDeVueContentForm.cleaned_data['dat_envoi_bibliotheque'],
+                                datetime.today().strftime('%Y-%m-%d'),
+                                datetime.today().strftime('%Y-%m-%d'),
+                                n_enregistrement
+                            ]
+                        )
+                        cursor.execute(
+                            """SELECT nomc, dat_ctrl, visa FROM control WHERE n_enregistrement = %s,
+                            """,
+                            [
+                                n_enregistrement 
+                            ]
+                        )
+                        result = cursor.fetchone()
+                        dat_ctrl = result[1] if result else None
+                        nomc = result[0] if result else None
+                        visa = result[2] if result else None
+                        cursor.execute(
+                                 """
+                                 INSERT INTO vue (
+                                     n_enregistrement, 
+                                     dat_ctrl, 
+                                     visa, 
+                                     controleur,
+                                     dat_recepv
+                                     ) VALUES (%s, %s, %s, %s, %s)
+                                 """, [
+                                     n_enregistrement,
+                                     dat_ctrl,
+                                     visa,
+                                     nomc,
+                                     formPriseDeVueContentForm.cleaned_data['dat_recep_vue'],
+                                 ]
+                             )
+                    
+                        cursor.execute(
+                            """
+                            UPDATE doc SET statut = %s WHERE n_enregistrement
+                            """,
+                            [
+                                "fini"
+                            ]
+                        )
+                 
+                    messages.success(request, "Document affecté avec succès!")
+                    return redirect('priseVue_protected')
+                except Exception as e:
+                    messages.error(request, f"Erreur lors de l'affectation du document: {str(e)}")
+        return render(request, self.template_name, {'formPriseDeVueContent': formPriseDeVueContentForm})
     def get(self, request):
-        return render(request, self.template_name)
+        formSearch = SearchForm(request.GET or None)
+        formPriseDeVueContentForm = PriseDeVueContentForm()
+        
+        context = {
+            'formSearch': formSearch,
+            'formPriseDeVueContent': formPriseDeVueContentForm,
+        }
+        return render(request, self.template_name, context)
 
 
 def priseVue_logout(request):
