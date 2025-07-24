@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/collecte/periodique.css' %}">
+{% endblock %}
+    <div class="collect-section">
+    <h2><i class="fas fa-clipboard-list"></i> Suivi </h2>
+
+    <div class="collect-buttons">
+        <button type="button" onclick="window.location.href='{% url 'priseVue_login' %}'">
+            <i class="fas fa-camera"></i> Prise de Vue
+        </button>
+        <button type="button" onclick="window.location.href='{% url 'indexeur_login' %}'">
+            <i class="fas fa-user-check"></i> Indexeur
+        </button>
+        <button type="button" onclick="window.location.href='{% url 'indexationControl_login' %}'">
+            <i class="fas fa-tasks"></i> Indexation & Contrôle
+        </button>
+    </div>
+
+    {% if form_monographie %}
+        <div id="form-container" class="login-container">
+            <h3> Connexion à Monographie </h3>
+            
+            {% if messages %}
+            <div class="alert alert-danger">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+            </div>
+            {% endif %}
+            
+            <form method="post">
+            {% csrf_token %}
+            {% for f in form_monographie %}
+            <div class="form-group" style="position:relative;">
+                {{ f.label_tag }}
+                {{ f }}
+                {% if f.errors %}
+                <div class="text-danger" style="display: flex; align-items: center;">
+                    {{ f.errors }}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="login-button">Entrer</button>
+            </form>
+        </div>
+    {% endif %}
+    </div>
+    <style>
+
+    </style>
+{% endblock %}

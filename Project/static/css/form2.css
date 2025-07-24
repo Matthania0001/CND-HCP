@@ -124,6 +124,78 @@
   user-select: none;
   margin-bottom: 0; /* Supprime la marge Bootstrap par défaut */
 }
+
+/* Style personnalisé pour les boutons radio alignés sur une ligne */
+.form-check-input2 {
+  /* Réinitialisation du style par défaut */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  /* Dimensions */
+  width: 1.2em;
+  height: 1.2em;
+  min-width: 1.2em;
+  margin-top: 0.15em; /* Alignement vertical */
+  margin-right: 0.5em; /* Espacement entre radios */
+
+  /* Style visuel */
+  border: 1px solid #b3d1ff;
+  border-radius: 50%; /* Rond pour radio */
+  background-color: rgb(197, 237, 253);
+  cursor: pointer;
+
+  /* Transition pour les effets */
+  transition: all 0.3s ease;
+
+  /* Positionnement */
+  display: inline-block;
+  vertical-align: middle;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 75%;
+}
+
+/* Style quand cochée */
+.form-check-input2:checked {
+  background-color: #1A5276;
+  border-color: #1A5276;
+  box-shadow: 0 0 0 0.25rem rgba(26, 82, 118, 0.25);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3ccircle cx='10' cy='10' r='5' fill='white'/%3e%3c/svg%3e");
+}
+
+/* Style au survol */
+.form-check-input2:hover {
+  box-shadow: 0 0 0 0.25rem rgba(26, 82, 118, 0.25);
+  border-color: #1A5276;
+}
+
+/* Style pour le focus/accessibilité */
+.form-check-input2:focus {
+  box-shadow: 0 0 0 0.25rem rgba(26, 82, 118, 0.25);
+  outline: 0;
+}
+
+/* Conteneur pour aligner les radios sur une ligne */
+.form-check-radio-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+/* Style du label associé */
+.form-check-label2 {
+  color: #1A5276;
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 0;
+  margin-right: 1em;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
 /* Responsive - Empilement sur mobile */
 @media (max-width: 768px) {
   .field-group {
@@ -139,5 +211,10 @@
   .field-row-part:first-child {
     padding-top: 0;
     margin-bottom: 0.5rem;
+  }
+  
+  .form-check-radio-group {
+    flex-direction: column;
+    gap: 0.5em;
   }
 }

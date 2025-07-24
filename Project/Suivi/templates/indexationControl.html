@@ -8,23 +8,17 @@
   <link rel="stylesheet" href="{% static 'css/liste.css' %}">
 {% endblock %}
     <div class="collect-section">
-        <h2><i class="fas fa-clipboard-list"></i> Collecte</h2>
+        <h2><i class="fas fa-clipboard-list"></i> Suivi </h2>
 
         <div class="collect-buttons">
-            <button type="button" onclick="window.location.href='{% url 'periodique_login' %}'">
-                <i class="fas fa-calendar-alt"></i> Periodique
-            </button>
-            <button type="button" onclick="window.location.href='{% url 'monographie_protected' %}'">
-                <i class="fas fa-book"></i> Monographie
+            <button type="button" onclick="window.location.href='{% url 'priseVue_login' %}'">
+                <i class="fas fa-camera"></i> Prise de Vue
             </button>
             <button type="button" onclick="window.location.href='{% url 'indexeur_login' %}'">
                 <i class="fas fa-user-check"></i> Indexeur
             </button>
             <button type="button" onclick="window.location.href='{% url 'indexationControl_login' %}'">
                 <i class="fas fa-tasks"></i> Indexation & Contrôle
-            </button>
-            <button type="button" onclick="window.location.href='{% url 'priseVue_login' %}'">
-                <i class="fas fa-camera"></i> Prise de Vue
             </button>
         </div>
         <h2>Indexation et contole</h2>

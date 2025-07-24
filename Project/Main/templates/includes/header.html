@@ -16,7 +16,13 @@
         <i class="fas fa-home"></i> Accueil
       </button>
       <button type="button" onclick="window.location.href='{% url 'collecte' %}'">
-        <i class="fas fa-clipboard-list"></i> Collecte
+        <i class="fas fa-clipboard-list"></i> Collecte et Enregistrement
+      </button>
+      <button type="button" onclick="window.location.href='{% url 'suivi' %}'">
+        <i class="fas fa-clipboard-list"></i> Suivi
+      </button>
+      <button type="button" onclick="window.location.href='{% url 'archivage' %}'">
+        <i class="fas fa-clipboard-list"></i> Archivage
       </button>
       <button type="button" onclick="window.location.href='{% url 'gestion' %}'">
         <i class="fas fa-tasks"></i> Gestion
@@ -27,7 +33,7 @@
       <button type="button" onclick="window.location.href='{% url 'rendement' %}'">
         <i class="fas fa-tachometer-alt"></i> Rendement
       </button>
-      <button type="button" onclick="window.location.href='{% url 'accueil' %}'">
+      <button type="button" onclick="window.location.href='{% url 'statistiques' %}'">
         <i class="fas fa-chart-line"></i> Statistiques
       </button>
       <button type="button" onclick="window.location.href='{% url 'accueil' %}'">

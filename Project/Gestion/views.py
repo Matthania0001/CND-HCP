@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.db import connection
 from django.views import View
-from .forms import SourceLoginForm, DomaineLoginForm, SourceSuppressionForm, SourceAjoutForm, DomaineSuppressionForm, DomaineAjoutForm, DocTypeSearchForm
+from .forms import SourceLoginForm, DomaineLoginForm, SourceSuppressionForm, SourceAjoutForm, DomaineSuppressionForm, DomaineAjoutForm, SearchByNumberForm
 from Collecte.forms import SearchForm
 from django.db import connection
 # Create your views here.
@@ -158,24 +158,30 @@ class DomaineProtectedView(View):
         }
         return render(request, self.template_name, context)
     
-class DocTypeSearchView(View):
-    template_name = 'list_doc_type.html'
-    def get(self, request):
-        form_search_doc_type = DocTypeSearchForm()
-        formSearch = SearchForm(request.GET or None)
-        return render(request, self.template_name, {'form_search_doc_type': form_search_doc_type,
-                                                    'formSearch': formSearch})
-    def post(self, request):
-        form_search_doc_type = DocTypeSearchForm()
-        query = "SELECT * FROM doc WHERE 1=1"
-        params = []
-        if form_search_doc_type.is_valid():
-            if form_search_doc_type.cleaned_data['date']:
-                if form_search_doc_type.cleaned_data['de']:
-                    if form_search_doc_type.changed_data['a']:
-                        query += " AND  = %s"
-                        params.append()
+# class DocTypeSearchView(View):
+#     template_name = 'list_doc_type.html'
+#     def get(self, request):
+#         form_search_doc_type = DocTypeSearchForm()
+#         formSearch = SearchForm(request.GET or None)
+#         return render(request, self.template_name, {'form_search_doc_type': form_search_doc_type,
+#                                                     'formSearch': formSearch})
+    # def post(self, request):
+    #     form_search_doc_type = DocTypeSearchForm()
+    #     query = "SELECT * FROM doc WHERE 1=1"
+    #     params = []
+    #     if form_search_doc_type.is_valid():
+    #         if form_search_doc_type.cleaned_data['date']:
+    #             if form_search_doc_type.cleaned_data['de']:
+    #                 if form_search_doc_type.changed_data['a']:
+    #                     query += " AND  = %s"
+    #                     params.append()
             
         
         
-        
+class SearchByNumberView(View):
+    template_name = 'searchByNumber.html'
+    def get(self, request):
+        form_search_by_number = SearchByNumberForm()
+        formSearch = SearchForm(request.GET or None)
+        return render(request, self.template_name, {'form_search_by_number': form_search_by_number,
+                                                    'formSearch': formSearch})

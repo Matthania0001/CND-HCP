@@ -5,29 +5,23 @@
   <link rel="stylesheet" href="{% static 'css/collecte/periodique.css' %}">
 {% endblock %}
     <div class="collect-section">
-    <h2><i class="fas fa-clipboard-list"></i> Collecte</h2>
+    <h2><i class="fas fa-clipboard-list"></i> Collecte et Enregistrement</h2>
 
     <div class="collect-buttons">
+        <button type="button" onclick="window.location.href='{% url 'collecte_login' %}'">
+            <i class="fas fa-book"></i> Collecte
+        </button>
         <button type="button" onclick="window.location.href='{% url 'periodique_login' %}'">
             <i class="fas fa-calendar-alt"></i> Periodique
         </button>
         <button type="button" onclick="window.location.href='{% url 'monographie_login' %}'">
             <i class="fas fa-book"></i> Monographie
         </button>
-        <button type="button" onclick="window.location.href='{% url 'indexeur_login' %}'">
-            <i class="fas fa-user-check"></i> Indexeur
-        </button>
-        <button type="button" onclick="window.location.href='{% url 'indexationControl_login' %}'">
-            <i class="fas fa-tasks"></i> Indexation & Contrôle
-        </button>
-        <button type="button" onclick="window.location.href='{% url 'priseVue_login' %}'">
-            <i class="fas fa-camera"></i> Prise de Vue
-        </button>
     </div>
 
-    {% if form_priseVue %}
+    {% if form_collect %}
         <div id="form-container" class="login-container">
-            <h3> Connexion à Prise de Vue </h3>
+            <h3> Connexion à Collecte </h3>
             
             {% if messages %}
             <div class="alert alert-danger">
@@ -39,7 +33,7 @@
             
             <form method="post">
             {% csrf_token %}
-            {% for f in form_priseVue %}
+            {% for f in form_collect %}
             <div class="form-group" style="position:relative;">
                 {{ f.label_tag }}
                 {{ f }}
@@ -55,7 +49,4 @@
         </div>
     {% endif %}
     </div>
-    <style>
-
-    </style>
 {% endblock %}

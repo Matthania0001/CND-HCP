@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/collecte/collecte.css' %}">
+  <link rel="stylesheet" href="{% static 'css/search.css' %}">
+  <link rel="stylesheet" href="{% static 'css/form.css' %}">
+  <link rel="stylesheet" href="{% static 'css/form2.css' %}">
+{% endblock %}
+    <div class="collect-section">
+    <h2><i class="fas fa-tasks"></i> Gestion </h2>
+
+    <div class="collect-buttons">
+        <button type="button" onclick="window.location.href='{% url 'bynumber' %}'">
+            <i class="fas fa-search"></i> Document à Indexer
+        </button>
+        <button type="button" onclick="window.location.href='{% url 'source_login' %}'">
+            <i class="fas fa-plus-circle"></i> Ajouter/Supprimer une source
+        </button>
+        <button type="button" onclick="window.location.href='{% url 'domaine_login' %}'">
+            <i class="fas fa-tags"></i> Ajouter/Supprimer un domaine
+        </button>
+        <button type="button" onclick="window.location.href='{% url 'domaine_login' %}'">
+            <i class="fas fa-tags"></i> Ajouter/Supprimer un domaine
+        </button>
+    </div>
+    <h2> Liste des Document </h2>
+    <div class="search-section">
+        <button type="button" onclick="window.location.href='{% url 'accueil' %}'">
+            <i class="fas fa-camera"></i> Editer
+        </button>
+        <form method="get" action="{% url 'resultats' %}">
+            <div class="search-input">
+                {{ formSearch.q }}
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </div>
+        </form>
+    </div>
+    <div class="periodique-form-section">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <form method="post" class="article-periodique-form">
+            {% csrf_token %}
+            <div class="form-section">
+                
+                <!-- N° Enregistrement -->
+                <div class="form-group">
+                    {% if form_search_by_number.num.errors %}
+                    <div class="alert alert-error">{{form_search_by_number.num.errors }}</div>
+                    {% endif %}
+                    <div class="field-row">
+                        {{ form_search_by_number.num.label_tag }}
+                        {{ form_search_by_number.num }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="enregistrer">
+                    <i class="fas fa-save"></i> Valider
+                </button>
+            </div>
+        </form>
+    </div>
+    </div>
+{% endblock %}

@@ -23,5 +23,8 @@ urlpatterns = [
     path('collecte/', include('Collecte.urls')), 
     path('gestion/', include('Gestion.urls')),
     path('bilan/', include('Bilan.urls')),
-    path('rendement/', include('Rendement.urls')), 
+    path('rendement/', include('Rendement.urls')),
+    path('statistiques/', include('Statistiques.urls')),
+    path('suivi/', include('Suivi.urls')), 
+    path('archivage/', include('Archivage.urls')),
 ]
