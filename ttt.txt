@@ -53,3 +53,13 @@
     <a href="javascript:history.back()" class="btn btn-secondary">Retour</a>
   </p>
 {% endblock %}
+
+
+Y-title
+|
+20|       █
+15|    █  █
+10| █  █  █
+ 5| █  █  █  █
+ 0|_█__█__█__█__█__█______ X-title
+      1  2  3  4  5  6
