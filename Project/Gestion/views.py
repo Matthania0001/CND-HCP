@@ -165,3 +165,17 @@ class DocTypeSearchView(View):
         formSearch = SearchForm(request.GET or None)
         return render(request, self.template_name, {'form_search_doc_type': form_search_doc_type,
                                                     'formSearch': formSearch})
+    def post(self, request):
+        form_search_doc_type = DocTypeSearchForm()
+        query = "SELECT * FROM doc WHERE 1=1"
+        params = []
+        if form_search_doc_type.is_valid():
+            if form_search_doc_type.cleaned_data['date']:
+                if form_search_doc_type.cleaned_data['de']:
+                    if form_search_doc_type.changed_data['a']:
+                        query += " AND  = %s"
+                        params.append()
+            
+        
+        
+        
