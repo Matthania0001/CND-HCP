@@ -252,8 +252,34 @@ class ArticlePeriodiqueForm(forms.Form):
     # )
     n_enregistrement = forms.ChoiceField(
         label="N° d'enregistrement",
-        choices = [(num.n_enregistrement, num.n_enregistrement) for num in Doc.objects.all()],
+        choices = [(num.n_enregistrement, num.n_enregistrement) for num in DocCollecte.objects.all() if num.statut == 'Collecté'],
         widget=forms.Select(attrs={'class': 'form-input'})
+    )
+    n_periodicite = forms.IntegerField(
+        label="Nombre de périodicité",
+        help_text="Saisir le nombre de periodicité",
+        widget=forms.NumberInput(attrs={'class': 'form-input'})
+    )
+    ACCES_CHOICES = [
+        ('NIT', 'NIT'),
+        ('NAC', 'NAC'),
+    ]
+    acces = forms.ChoiceField(
+        label="Acces",
+        choices=ACCES_CHOICES,
+        widget=forms.RadioSelect(attrs={'class': 'form-check-input2'})
+    )
+    id_acces_arabe = forms.CharField(
+        label = "Identifiant en Arabe",
+        max_length=60,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-input'}),
+    )
+    id_acces_etranger = forms.CharField(
+        label = "Identifiant en Langue Etrangère",
+        max_length=60,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-input'})
     )
     # titre_article = forms.CharField(
     #     label="Titre Article*",
@@ -308,10 +334,9 @@ class ArticlePeriodiqueForm(forms.Form):
         widget=forms.TextInput(attrs={'class': 'form-input'})
     )
     
-    domaine = forms.ModelChoiceField(
-        queryset=Domaine.objects.all(),
+    domaine = forms.ChoiceField(
+        choices=[(domaine.domaine, domaine.domaine) for domaine in Domaine.objects.all()],
         label="Domaine",
-        to_field_name="domaine",
         widget=forms.Select(attrs={'class': 'form-input'})
     )
     
@@ -328,12 +353,12 @@ class ArticlePeriodiqueForm(forms.Form):
         widget=forms.Select(attrs={'class': 'form-input'})
     )
     
-    source_expeditrice = forms.ModelChoiceField(
-        queryset=Source.objects.all(),
-        label="Source Expéditrice",
-        to_field_name="source",
-        widget=forms.Select(attrs={'class': 'form-input'})
-    )
+    # source_expeditrice = forms.ModelChoiceField(
+    #     queryset=Source.objects.all(),
+    #     label="Source Expéditrice",
+    #     to_field_name="source",
+    #     widget=forms.Select(attrs={'class': 'form-input'})
+    # )
     
     TYPE_ACQUISITION = [
     ('Achat', 'Achat'),
@@ -493,11 +518,11 @@ class NonPeriodiqueForm(forms.Form):
         widget=forms.Select(attrs={'class': 'form-input'})
     )
     
-    source_expeditrice = forms.ChoiceField(
-        choices=[(source.source, source.source) for source in Source.objects.all()],
-        label="Source Expéditrice",
-        widget=forms.Select(attrs={'class': 'form-input'})
-    )
+    # source_expeditrice = forms.ChoiceField(
+    #     choices=[(source.source, source.source) for source in Source.objects.all()],
+    #     label="Source Expéditrice",
+    #     widget=forms.Select(attrs={'class': 'form-input'})
+    # )
     
     TYPE_ACQUISITION = [
     ('Achat', 'Achat'),

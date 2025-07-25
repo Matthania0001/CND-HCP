@@ -126,17 +126,16 @@ from django.urls import reverse
 class PeriodiqueProtectedView(View):
     template_name = 'periodique.html'
 
-    def dispatch(self, request, *args, **kwargs):
-        # Vérification stricte + suppression immédiate de l'authentification
-        if not request.session.get('periodique_auth_token'):
-            return redirect('periodique_login')
-        
-        # Supprimer le token immédiatement après vérification
-        token = request.session.pop('periodique_auth_token', None)
-        if not token:
-            return redirect('periodique_login')
+    # def dispatch(self, request, *args, **kwargs):
+    #     # Vérification stricte + suppression immédiate de l'authentification
+    #     if not request.session.get('periodique_auth_token'):
+    #         return redirect('periodique_login ')
+    #     # Supprimer le token immédiatement après vérification
+    #     token = request.session.pop('periodique_auth_token', None)
+    #     if not token:
+    #         return redirect('periodique_login')
             
-        return super().dispatch(request, *args, **kwargs)
+    #     return super().dispatch(request, *args, **kwargs)
     def get(self, request):
         # Initialisation des formulaires
         formSearch = SearchForm(request.GET or None)
@@ -153,61 +152,153 @@ class PeriodiqueProtectedView(View):
         
         if article_form.is_valid():
             try:
-                # Sauvegarde dans la table Doc
-                doc = Doc.objects.create(
-                    n_enregistrement=article_form.cleaned_data['n_enregistrement'],
-                    titre=article_form.cleaned_data['titre'],
-                    titre_article=article_form.cleaned_data['titre_article'],
-                    periodicite='p',  # Périodique
-                    vol=article_form.cleaned_data['vol'],
-                    tom=article_form.cleaned_data['tom'],
-                    num=article_form.cleaned_data['num'],
-                    pages=article_form.cleaned_data['pages'],
-                    domaine=article_form.cleaned_data['domaine'].domaine,
-                    statut='collecte',
-                    lang=article_form.cleaned_data['langue'],
+                cursor = connection.cursor()
+                # Récupérer les infos du document collecté
+                cursor.execute(
+                    """
+                    SELECT titre_document, source_document, support_document 
+                    FROM doc_collecte 
+                    WHERE n_enregistrement = %s
+                    """,
+                    [article_form.cleaned_data['n_enregistrement']]
                 )
-                
-                # Gestion des auteurs (séparés par /)
+                row = cursor.fetchone()
+                titre_document, source_document, support_document = row if row else (None, None, None)
+
+                # Mettre à jour le statut
+                cursor.execute(
+                    """
+                    UPDATE doc_collecte SET statut = 'Enregistré' WHERE n_enregistrement = %s
+                    """,
+                    [article_form.cleaned_data['n_enregistrement']]
+                )
+                cursor.execute(
+                    """
+                    INSERT INTO doc_article (
+                        n_enregistrement, titre, titre_article, pages, domaine, vol, tom, num,statut, n_periodique, lang, type_support, acces, id_acces_arabe, id_acces_etranger
+                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    """,
+                    [
+                        article_form.cleaned_data['n_enregistrement'],
+                        article_form.cleaned_data['titre'],
+                        titre_document,
+                        article_form.cleaned_data['pages'],
+                        article_form.cleaned_data['domaine'],
+                        article_form.cleaned_data['vol'],
+                        article_form.cleaned_data['tom'],
+                        article_form.cleaned_data['num'],
+                        'Enregistré',
+                        article_form.cleaned_data['n_periodicite'],
+                        article_form.cleaned_data['langue'],
+                        support_document,
+                        article_form.cleaned_data['acces'],
+                        article_form.cleaned_data['id_acces_arabe'],
+                        article_form.cleaned_data['id_acces_etranger'],
+                    ]
+                )
+                n_enregistrement = article_form.cleaned_data['n_enregistrement']
                 auteurs = article_form.cleaned_data['auteurs'].split('/')
                 for auteur in auteurs:
-                    if auteur.strip():  # Ignore les chaînes vides
-                        Ecriture.objects.create(
-                            auteur=auteur.strip(),
-                            n_enregistrement=doc.n_enregistrement
+                    auteur = auteur.strip()
+                    if auteur:
+                        cursor.execute(
+                            """
+                            INSERT INTO auteur (auteur, n_enregistrement) VALUES (%s, %s)
+                            """,
+                            [auteur, n_enregistrement]
                         )
-                
-                # Sauvegarde dans Edition
-                if article_form.cleaned_data['editeur']:
-                    Edition.objects.create(
-                        editeur=article_form.cleaned_data['editeur'].editeur,
-                        n_enregistrement=doc.n_enregistrement,
-                    )
-                
-                # Sauvegarde dans Fournit
-                Fournit.objects.create(
-                    source=article_form.cleaned_data['source_expeditrice'].source,
-                    n_enregistrement=doc.n_enregistrement,
-                    date_reception=article_form.cleaned_data['date_reception'],
-                    obligation=article_form.cleaned_data['type_acquisition']
+                cursor.execute(
+                    """
+                    INSERT INTO fournit(source, n_enregistrement, date_reception, obligation)
+                    VALUES (%s, %s, %s, %s)
+                    """,
+                    [
+                        source_document,
+                        article_form.cleaned_data['n_enregistrement'],
+                        article_form.cleaned_data['date_reception'],
+                        article_form.cleaned_data['type_acquisition']
+                    ]
                 )
-                
-                # Sauvegarde dans Collecte
-                Collecte.objects.create(
-                    nomrc=article_form.cleaned_data['responsable_saisie'],
-                    n_enregistrement=doc.n_enregistrement,
-                    datsaisi_c=article_form.cleaned_data['date_saisie']
+                cursor.execute(
+                    """
+                    INSERT INTO collecte(nomrc, n_enregistrement, datsaisi_c)
+                    VALUES (%s, %s, %s)
+                    """,
+                    [
+                        article_form.cleaned_data['responsable_saisie'],
+                        article_form.cleaned_data['n_enregistrement'],
+                        date.today()
+                    ]
                 )
-                
-                # Sauvegarde dans Suivi
-                Suivi.objects.create(
-                    noms=article_form.cleaned_data['responsable_saisie'],
-                    n_enregistrement=doc.n_enregistrement,
-                    datenvoi_t=article_form.cleaned_data['date_envoi']
+
+                # Insérer dans doc_enregistre
+                cursor.execute(
+                    """
+                    INSERT INTO doc_enregistre(responsable_saisie, statut, n_enregistrement, date_saisie)
+                    VALUES (%s, %s, %s, %s)
+                    """,
+                    [
+                        article_form.cleaned_data['responsable_saisie'],
+                        'Enregistré',
+                        article_form.cleaned_data['n_enregistrement'],
+                        date.today()
+                    ]
                 )
+                # Sauvegarde dans la table Doc
+                # doc = Doc.objects.create(
+                #     n_enregistrement=article_form.cleaned_data['n_enregistrement'],
+                #     titre=article_form.cleaned_data['titre'],
+                #     titre_article=article_form.cleaned_data['titre_article'],
+                #     periodicite='p',  # Périodique
+                #     vol=article_form.cleaned_data['vol'],
+                #     tom=article_form.cleaned_data['tom'],
+                #     num=article_form.cleaned_data['num'],
+                #     pages=article_form.cleaned_data['pages'],
+                #     domaine=article_form.cleaned_data['domaine'].domaine,
+                #     statut='collecte',
+                #     lang=article_form.cleaned_data['langue'],
+                # )
+                
+                # # Gestion des auteurs (séparés par /)
+                # auteurs = article_form.cleaned_data['auteurs'].split('/')
+                # for auteur in auteurs:
+                #     if auteur.strip():  # Ignore les chaînes vides
+                #         Ecriture.objects.create(
+                #             auteur=auteur.strip(),
+                #             n_enregistrement=doc.n_enregistrement
+                #         )
+                
+                # # Sauvegarde dans Edition
+                # if article_form.cleaned_data['editeur']:
+                #     Edition.objects.create(
+                #         editeur=article_form.cleaned_data['editeur'].editeur,
+                #         n_enregistrement=doc.n_enregistrement,
+                #     )
+                
+                # # Sauvegarde dans Fournit
+                # Fournit.objects.create(
+                #     source=article_form.cleaned_data['source_expeditrice'].source,
+                #     n_enregistrement=doc.n_enregistrement,
+                #     date_reception=article_form.cleaned_data['date_reception'],
+                #     obligation=article_form.cleaned_data['type_acquisition']
+                # )
+                
+                # # Sauvegarde dans Collecte
+                # Collecte.objects.create(
+                #     nomrc=article_form.cleaned_data['responsable_saisie'],
+                #     n_enregistrement=doc.n_enregistrement,
+                #     datsaisi_c=article_form.cleaned_data['date_saisie']
+                # )
+                
+                # # Sauvegarde dans Suivi
+                # Suivi.objects.create(
+                #     noms=article_form.cleaned_data['responsable_saisie'],
+                #     n_enregistrement=doc.n_enregistrement,
+                #     datenvoi_t=article_form.cleaned_data['date_envoi']
+                # )
                 
                 messages.success(request, "L'article périodique a été enregistré avec succès!")
-                return redirect('periodique_protected')
+                article_form = ArticlePeriodiqueForm()  # 
             
             except Exception as e:
                 messages.error(request, f"Une erreur est survenue: {str(e)}")
@@ -259,228 +350,148 @@ class MonographieAuthView(View):
 from datetime import date
 class MonographieProtectedView(View):
     template_name = 'monographie.html'
-    
-    def dispatch(self, request, *args, **kwargs):
-        # Vérification stricte + suppression immédiate de l'authentification
-        if not request.session.get('monographie_auth_token'):
-            return redirect('monographie_login')
-        
-        # Supprimer le token immédiatement après vérification
-        token = request.session.pop('monographie_auth_token', None)
-        if not token:
-            return redirect('monographie_login')
-            
-        return super().dispatch(request, *args, **kwargs)
+
+    # def dispatch(self, request, *args, **kwargs):
+    #     if not request.session.get('monographie_auth_token'):
+    #         return redirect('monographie_login')
+    #     token = request.session.pop('monographie_auth_token', None)
+    #     if not token:
+    #         return redirect('monographie_login')
+    #     return super().dispatch(request, *args, **kwargs)
+
     def get(self, request):
-        # Initialisation des formulaires
         formSearch = SearchForm(request.GET or None)
         monographie_form = NonPeriodiqueForm()
-        
         context = {
             'formSearch': formSearch,
             'monographie_form': monographie_form,
         }
         return render(request, self.template_name, context)
-    
+
     def post(self, request):
         monographie_form = NonPeriodiqueForm(request.POST)
         formSearch = SearchForm(request.GET or None)
-        
+
         if monographie_form.is_valid():
             try:
-                # Sauvegarde dans la table Doc
-                # doc = Doc.objects.create(
-                #     n_enregistrement=monographie_form.cleaned_data['n_enregistrement'],
-                #     titre=monographie_form.cleaned_data['titre'],
-                #     titre_article=monographie_form.cleaned_data['titre_article'],
-                #     periodicite=monographie_form.cleaned_data['type'],  
-                #     vol=monographie_form.cleaned_data['vol'],
-                #     tom=monographie_form.cleaned_data['tom'],
-                #     num=monographie_form.cleaned_data['num'],
-                #     pages=monographie_form.cleaned_data['pages'],
-                #     domaine=monographie_form.cleaned_data['domaine'].domaine,
-                #     statut='collecté',
-                #     lang=monographie_form.cleaned_data['langue'],
-                # )
-                with connection.cursor as cursor:
-                    cursor.execute(
-                            """
-                            SELECT titre_document, source_document, support_document 
-                            FROM doc_collecte 
-                            WHERE n_enregistrement = %s
-                            """,
-                            [monographie_form.cleaned_data['n_enregistrement']]
-                        )
-                    row = cursor.fetchone()  # Exemple : ('Titre', 'Source', 'Support')
+                cursor = connection.cursor()
+                # Récupérer les infos du document collecté
+                cursor.execute(
+                    """
+                    SELECT titre_document, source_document, support_document 
+                    FROM doc_collecte 
+                    WHERE n_enregistrement = %s
+                    """,
+                    [monographie_form.cleaned_data['n_enregistrement']]
+                )
+                row = cursor.fetchone()
+                titre_document, source_document, support_document = row if row else (None, None, None)
 
-                    if row:
-                        titre_document, source_document, support_document = row
-                    cursor.execute(
-                        """
-                        INSERT INTO doc_monographie (
-                                n_enregistrement,
-                                titre,
-                                pages,
-                                domaine,
-                                type,
-                                statut,
-                                n_periodique,
-                                lang,
-                                type_support,
-                                acces,
-                                id_acces_arabe,
-                                id_acces_etranger
-                            ) VALUES (
-                                %s,  
-                                %s,  
-                                %s,  
-                                %s,  
-                                %s,  
-                                %s,  
-                                %s,  
-                                %s,  
-                                %s,
-                                %s,
-                                %s,
-                                %s, 
-                            );
+                # Mettre à jour le statut
+                cursor.execute(
+                    """
+                    UPDATE doc_collecte SET statut = 'Enregistré' WHERE n_enregistrement = %s
+                    """,
+                    [monographie_form.cleaned_data['n_enregistrement']]
+                )
 
-                        """,
-                        [monographie_form.cleaned_data['n_enregistrement'],
-                         titre_document,
-                         monographie_form.cleaned_data['pages'],
-                         monographie_form.cleaned_data['domaine'],
-                         monographie_form.cleaned_data['type'],
+                # Insérer dans doc_monographie
+                cursor.execute(
+                    """
+                    INSERT INTO doc_monographie (
+                        n_enregistrement, titre, pages, domaine, type, statut, n_periodique, lang, type_support, acces, id_acces_arabe, id_acces_etranger
+                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    """,
+                    [
+                        monographie_form.cleaned_data['n_enregistrement'],
+                        titre_document,
+                        monographie_form.cleaned_data['pages'],
+                        monographie_form.cleaned_data['domaine'],
+                        monographie_form.cleaned_data['type'],
                         'Enregistré',
-                         monographie_form.cleaned_data['n_periodicite'],
-                         monographie_form.cleaned_data['langue'],
-                         support_document,
-                         monographie_form.cleaned_data['acces'],
-                         monographie_form.cleaned_data['id_acces_arabe'],
-                         monographie_form.cleaned_data['id_acces_etranger'],
-                        ]
-                    )
-                    # Gestion des auteurs (séparés par /)
-                    n_enregistrement = monographie_form.cleaned_data['n_enregistrement']
-                    auteurs = monographie_form.cleaned_data['auteur'].split('/')
-                    for auteur in auteurs:
-                        auteur = auteur.strip()  # Supprime les espaces avant/après
-                        if auteur:  # Vérifie que le nom n'est pas vide
-                            cursor.execute(
-                                """
-                                INSERT INTO auteur (
-                                    auteur,
-                                    n_enregistrement
-                                )
-                                VALUES (%s, %s)
-                                """,
-                                [auteur, n_enregistrement]
-                            )
-                    # Sauvegarde dans Editeur
-                    cursor.execute(
-                        """
-                        INSERT INTO editeur(
-                            editeur,
-                            ville_edition,
-                            n_enregistrement,
-                            date_edition
-                        ) VALUES (%s, %s, %s, %s)
-                        """,
-                        [monographie_form.cleaned_data['editeur'],
-                         monographie_form.cleaned_data['ville_edition'],
-                         monographie_form.cleaned_data['n_enregistrement'],
-                         monographie_form.cleaned_data['date_edition'],
-                         ]
-                    )
-                # Gestion des auteurs (séparés par /)
-                # auteurs = monographie_form.cleaned_data['auteurs'].split('/')
-                # for auteur in auteurs:
-                #     if auteur.strip():  # Ignore les chaînes vides
-                #         Ecriture.objects.create(
-                #             auteur=auteur.strip(),
-                #             n_enregistrement=doc.n_enregistrement
-                #         )
-                
-                # Sauvegarde dans Edition
-                # if monographie_form.cleaned_data['editeur']:
-                #     Edition.objects.create(
-                #         editeur=monographie_form.cleaned_data['editeur'].editeur,
-                #         n_enregistrement=doc.n_enregistrement,
-                #         ville_edition=monographie_form.cleaned_data['ville_edition'],
-                #         date_edition=monographie_form.cleaned_data['date_edition'],
-                #     )
-                
-                # Sauvegarde dans Fournit
+                        monographie_form.cleaned_data['n_periodicite'],
+                        monographie_form.cleaned_data['langue'],
+                        support_document,
+                        monographie_form.cleaned_data['acces'],
+                        monographie_form.cleaned_data['id_acces_arabe'],
+                        monographie_form.cleaned_data['id_acces_etranger'],
+                    ]
+                )
+
+                # Insérer les auteurs
+                n_enregistrement = monographie_form.cleaned_data['n_enregistrement']
+                auteurs = monographie_form.cleaned_data['auteurs'].split('/')
+                for auteur in auteurs:
+                    auteur = auteur.strip()
+                    if auteur:
+                        cursor.execute(
+                            """
+                            INSERT INTO auteur (auteur, n_enregistrement) VALUES (%s, %s)
+                            """,
+                            [auteur, n_enregistrement]
+                        )
+
+                # Insérer dans editeur
                 cursor.execute(
                     """
-                    INSERT INTO fournit(
-                        source,
-                        n_enregistrement,
-                        date_reception,
-                        obligation
-                    ) VALUES (%s, %s, %s, %s)
+                    INSERT INTO editeur(editeur, ville_edition, n_enregistrement, date_edition)
+                    VALUES (%s, %s, %s, %s)
                     """,
-                    [source_document,
-                     monographie_form.cleaned_data['n_enregistrement'],
-                     monographie_form.cleaned_data['date_reception'],
-                     monographie_form.cleaned_data['type_acquisition']]
+                    [
+                        monographie_form.cleaned_data['editeur'],
+                        monographie_form.cleaned_data['ville_edition'],
+                        monographie_form.cleaned_data['n_enregistrement'],
+                        monographie_form.cleaned_data['date_edition'],
+                    ]
                 )
-                # Fournit.objects.create(
-                #     source=monographie_form.cleaned_data['source_expeditrice'].source,
-                #     n_enregistrement=doc.n_enregistrement,
-                #     date_reception=monographie_form.cleaned_data['date_reception'],
-                #     obligation=monographie_form.cleaned_data['type_acquisition']
-                # )
-                
-                # Sauvegarde dans Collecte
+
+                # Insérer dans fournit
                 cursor.execute(
                     """
-                    INSERT INTO collecte(
-                        nomrc,
-                        n_enregistrement,
-                        datsaisi_c,
-                    ) VALUES (%s, %s, %s)
+                    INSERT INTO fournit(source, n_enregistrement, date_reception, obligation)
+                    VALUES (%s, %s, %s, %s)
                     """,
-                    [monographie_form.cleaned_data['responsable_saisie'],
-                     monographie_form.cleaned_data['n_enregistrement'],
-                     date.today()
-                     ]
+                    [
+                        source_document,
+                        monographie_form.cleaned_data['n_enregistrement'],
+                        monographie_form.cleaned_data['date_reception'],
+                        monographie_form.cleaned_data['type_acquisition']
+                    ]
                 )
-                # Collecte.objects.create(
-                #     nomrc=monographie_form.cleaned_data['responsable_saisie'],
-                #     n_enregistrement=doc.n_enregistrement,
-                #     datsaisi_c=monographie_form.cleaned_data['date_saisie']
-                # )
-                
-                # Sauvegarde dans doc_enregistre
+
+                # Insérer dans collecte
                 cursor.execute(
                     """
-                    INSERT INTO doc_enregistre(
-                        responsable_saisie,
-                        statut,
-                        n_enregistrement,
-                        date_saisie,
-                    ) VALUES (%s, %s, %s, %s)
+                    INSERT INTO collecte(nomrc, n_enregistrement, datsaisi_c)
+                    VALUES (%s, %s, %s)
                     """,
-                    [monographie_form.cleaned_data['responsable_saisie'],
-                     'Enregistré',
-                     monographie_form.cleaned_data['n_enregistrement'],
-                     date.today()
-                     ]
+                    [
+                        monographie_form.cleaned_data['responsable_saisie'],
+                        monographie_form.cleaned_data['n_enregistrement'],
+                        date.today()
+                    ]
                 )
-                # Suivi.objects.create(
-                #     noms=monographie_form.cleaned_data['responsable_saisie'],
-                #     n_enregistrement=doc.n_enregistrement,
-                #     datenvoi_t=monographie_form.cleaned_data['date_envoi']
-                # )
-                
-                messages.success(request, "L'article périodique a été enregistré avec succès!")
-                return redirect('monographie_protected')
-            
+
+                # Insérer dans doc_enregistre
+                cursor.execute(
+                    """
+                    INSERT INTO doc_enregistre(responsable_saisie, statut, n_enregistrement, date_saisie)
+                    VALUES (%s, %s, %s, %s)
+                    """,
+                    [
+                        monographie_form.cleaned_data['responsable_saisie'],
+                        'Enregistré',
+                        monographie_form.cleaned_data['n_enregistrement'],
+                        date.today()
+                    ]
+                )
+
+                messages.success(request, "La monographie a été enregistrée avec succès!")
+                monographie_form = NonPeriodiqueForm()
+
             except Exception as e:
                 messages.error(request, f"Une erreur est survenue: {str(e)}")
-        
-        # Si le formulaire n'est pas valide ou erreur d'enregistrement
+
         context = {
             'formSearch': formSearch,
             'monographie_form': monographie_form,
@@ -1014,7 +1025,7 @@ from django.db import connection
 #             where_parts.append("((LOWER(d.titre) LIKE %s) OR (LOWER(d.titre_article) LIKE %s))")
 #             params.extend([f"%{terme}%", f"%{terme}%"])
 
-#         where_query = " AND ".join([f"({part}" for part in where_parts])
+#         where_query = " AND ".join([f"({part})" for part in where_parts])
 
 #         query = f"""
 #             SELECT 

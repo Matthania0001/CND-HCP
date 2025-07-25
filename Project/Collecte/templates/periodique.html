@@ -272,6 +272,7 @@
   <link rel="stylesheet" href="{% static 'css/collecte/collecte.css' %}">
   <link rel="stylesheet" href="{% static 'css/search.css' %}">
   <link rel="stylesheet" href="{% static 'css/form.css' %}">
+   <link rel="stylesheet" href="{% static 'css/form2.css' %}">
   <link rel="stylesheet" href="{% static 'css/direct.css' %}">
 {% endblock %}
 
@@ -311,7 +312,7 @@
         {% if messages %}
         <div class="messages">
             {% for message in messages %}
-            <div class="alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" data-auto-dismiss="5000">
                 {{ message }}
             </div>
             {% endfor %}
@@ -441,7 +442,18 @@
                         </div>
                         <span class="help-text">{{ article_form.pages.help_text }}</span>
                     </div>
-                </div>
+                    <div class="form-group">
+                        {% if article_form.n_periodicite.errors %}
+                        <div class="alert alert-error">{{ article_form.n_periodicite.errors }}</div>
+                        {% endif %}
+                        <div class="field-row">
+                            {{ article_form.n_periodicite.label_tag }}
+                            {{ article_form.n_periodicite }}
+                        </div>
+                        <span class="help-text">{{ article_form.n_periodicite.help_text }}</span>
+                    </div>
+
+                    
                 
                 <!-- Domaine + Langue -->
                 <div class="form-row">
@@ -487,6 +499,46 @@
                     <div class="field-row">
                         {{ article_form.type_acquisition.label_tag }}
                         {{ article_form.type_acquisition }}
+                    </div>
+                </div>
+                <div class="form-group">
+                        {% if article_form.acces.errors %}
+                        <div class="alert alert-error">{{ article_form.acces.errors }}</div>
+                            {% endif %}
+                            <div class="field-with-help-text">
+                                <div class="form-check-radio-group">
+                                    <div>
+                                        {{ article_form.acces.label_tag }}
+                                    </div>
+                                    {% for radio in article_form.acces %}
+                                        <div class="form-check-radio-item">
+                                            {{ radio.tag }}
+                                            <label class="form-check-label2" for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <span class="help-text">{{ article_form.acces.help_text }}</span>
+                            </div>
+                            {% comment %} <div class="field-row">
+                                {{ form_collection_doc.support.label_tag }}
+                                {{ form_collection_doc.support }}
+                            </div>
+                            <span class="help-text">{{form_collection_doc.support.help_text}}</span> {% endcomment %}
+                        
+                    </div>
+                    <div class="form-group">
+                        {% if article_form.id_acces_arabe.errors %}
+                        <div class="alert alert-error">{{ article_form.id_acces_arabe.errors }}</div>
+                        {% endif %}
+                        {% if article_form.id_acces_etranger.errors %}
+                        <div class="alert alert-error">{{ article_form.id_acces_etranger.errors }}</div>
+                        {% endif %}
+                        <div class="field-row">
+                            {{ article_form.id_acces_arabe.label_tag }}
+                            {{ article_form.id_acces_arabe }}
+                            {{ article_form.id_acces_etranger.label_tag }}
+                            {{ article_form.id_acces_etranger }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -587,7 +639,7 @@
         <div class = "directSection">
             <div class = "buttonSection">
                 <h3> Enregistrer plutot en tant qu'un document Non périodique, UGP, UG ou Rapport </h3>
-                <button type="button" onclick="window.location.href='{% url 'monographie_login' %}'">
+                <button type="button" onclick="window.location.href='{% url 'monographie_protected' %}'">
                     <i class="fas fa-calendar-alt"></i> Monographie
                 </button>
             </div>
@@ -599,4 +651,17 @@
         </div>
     </div>
 </div>
+<script>
+        document.addEventListener("DOMContentLoaded", function() {
+        const alerts = document.querySelectorAll('.alert[data-auto-dismiss]');
+        alerts.forEach(alert => {
+            const timeout = parseInt(alert.getAttribute('data-auto-dismiss'), 10);
+            setTimeout(() => {
+            alert.style.transition = "opacity 0.5s ease";
+            alert.style.opacity = "0";
+            setTimeout(() => alert.remove(), 500);
+            }, timeout);
+        });
+        });
+</script>
 {% endblock %}
