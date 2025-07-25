@@ -272,6 +272,7 @@
   <link rel="stylesheet" href="{% static 'css/collecte/collecte.css' %}">
   <link rel="stylesheet" href="{% static 'css/search.css' %}">
   <link rel="stylesheet" href="{% static 'css/form.css' %}">
+  <link rel="stylesheet" href="{% static 'css/direct.css' %}">
 {% endblock %}
 
 <div class="collect-section">
@@ -281,7 +282,7 @@
         <button type="button" onclick="window.location.href='{% url 'collecte_login' %}'">
             <i class="fas fa-book"></i> Collecte
         </button>
-        <button type="button" onclick="window.location.href='{% url 'periodique_protected' %}'">
+        <button type="button" onclick="window.location.href='{% url 'periodique_login' %}'">
             <i class="fas fa-calendar-alt"></i> Periodique
         </button>
         <button type="button" onclick="window.location.href='{% url 'monographie_login' %}'">
@@ -333,7 +334,7 @@
                         {{ article_form.n_enregistrement.label_tag }}
                         {{ article_form.n_enregistrement }}
                     </div>
-                    <span class="help-text">/2023</span>
+                    <span class="help-text">Selectionner le numéro d'enregistrement du document à enregistrer</span>
                 </div>
                 
                 <!-- Titre Article -->
@@ -583,10 +584,17 @@
                 </button>
             </div>
         </form>
+        <div class = "directSection">
+            <div class = "buttonSection">
+                <h3> Enregistrer plutot en tant qu'un document Non périodique, UGP, UG ou Rapport </h3>
+                <button type="button" onclick="window.location.href='{% url 'monographie_login' %}'">
+                    <i class="fas fa-calendar-alt"></i> Monographie
+                </button>
+            </div>
+        </div>
         
         <!-- Notes explicatives -->
         <div class="form-notes">
-            <p><strong>* Titre Article :</strong> Extrait d'ouvrage collectif, Extrait d'acte de congrès, Extrait de périodique</p>
             <p><strong>** Titre Source :</strong> Titre du périodique, Titre d'acte de congrès, Titre monographie, Titre d'ouvrage collectif</p>
         </div>
     </div>

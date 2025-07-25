@@ -85,11 +85,11 @@ WSGI_APPLICATION = 'Project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'collecte',
+        'NAME': 'collect',
         'USER': 'root',
-        'PASSWORD': 'hcpcnd',
+        'PASSWORD': 'django',
         'HOST': 'localhost',
-        'PORT': '3306',
+        'PORT': '3305',
         'OPTIONS': {
             'charset': 'utf8mb4',
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
@@ -140,3 +140,6 @@ STATICFILES_DIRS = [ BASE_DIR / "static" ]
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SESSION_COOKIE_SECURE = True  # Dans settings.py si vous utilisez HTTPS
 SESSION_COOKIE_HTTPONLY = True
+
+SESSION_COOKIE_AGE = 2 * 60 * 60  # 2 heures en secondes
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False

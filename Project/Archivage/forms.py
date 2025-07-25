@@ -5,7 +5,7 @@ class ArchivageDocForm(forms.Form):
     num = forms.ChoiceField(
         label="N° d'enregistrement",
         choices = [(num.n_enregistrement, num.n_enregistrement) for num in Doc.objects.all()],
-        widget=forms.Select(attrs={'class': 'form-input'})
+        widget=forms.Select(attrs={'class': 'form-input'}),
     )
     
     dat_saisie = forms.DateField(

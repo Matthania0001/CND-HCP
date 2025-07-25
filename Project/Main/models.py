@@ -235,3 +235,56 @@ class Vue(models.Model):
         managed = False
         db_table = 'vue'
         unique_together = (('controleur', 'n_enregistrement'),)
+
+from django.db import models
+
+class DocCollecte(models.Model):
+    n_enregistrement = models.BigIntegerField(primary_key=True)
+    titre_document = models.CharField(max_length=200)
+    source_document = models.CharField(max_length=100)
+    support_document = models.CharField(max_length=50)
+    date_collecte = models.DateField()
+    statut = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'doc_collecte'
+        managed = False  # Si la table existe déjà dans la base
+        
+from django.db import models
+
+class DocArticle(models.Model):
+    n_enregistrement = models.BigIntegerField(primary_key=True)
+    titre = models.CharField(max_length=200)
+    titre_article = models.CharField(max_length=200, blank=True, null=True)
+    pages = models.CharField(max_length=30, default='0')
+    domaine = models.CharField(max_length=80)
+    type = models.CharField(max_length=100)
+    periodicite = models.CharField(max_length=3, default='0')
+    vol = models.CharField(max_length=25)
+    tom = models.CharField(max_length=25)
+    num = models.CharField(max_length=25)
+    statut = models.CharField(max_length=10, default='0')
+    n_periodique = models.SmallIntegerField(blank=True, null=True)
+    lang = models.CharField(max_length=2)
+    type_support = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'doc_article'
+        managed = False  # Supprimez cette ligne si vous voulez que Django gère la table
+        
+from django.db import models
+
+class DocMonographie(models.Model):
+    n_enregistrement = models.BigIntegerField(primary_key=True)
+    titre = models.CharField(max_length=200)
+    pages = models.CharField(max_length=30, default='0')
+    domaine = models.CharField(max_length=80)
+    type = models.CharField(max_length=100)
+    statut = models.CharField(max_length=10, default='0')
+    n_periodique = models.SmallIntegerField(blank=True, null=True)
+    lang = models.CharField(max_length=2)
+    type_support = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'doc_monographie'
+        managed = False
