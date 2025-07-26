@@ -116,8 +116,8 @@ class DomaineAjoutForm(forms.Form):
     
 
 class SearchByNumberForm(forms.Form):
-    num = forms.ChoiceField(
+    num = forms.MultipleChoiceField(
         label="Numéro de document",
-        choices=[(doc.n_enregistrement, doc.n_enregistrement) for doc in Doc.objects.all()],
-        widget=forms.Select(attrs={'class': 'form-input'}),
+        choices=[('','')]+[(doc.n_enregistrement, doc.n_enregistrement) for doc in Doc.objects.all()],
+        widget=forms.SelectMultiple(attrs={'class': 'form-input'}),
         )

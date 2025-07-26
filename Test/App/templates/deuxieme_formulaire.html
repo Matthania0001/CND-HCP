@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Deuxième Formulaire</title>
+</head>
+<body>
+    <h1>Deuxième Formulaire</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Terminer</button>
+    </form>
+</body>
+</html>

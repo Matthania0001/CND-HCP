@@ -70,17 +70,17 @@ class IndexeurAuthView(View):
 class IndexeurProtectedView(View):
     template_name = 'indexeur.html'
     
-    def dispatch(self, request, *args, **kwargs):
-        # Vérification stricte + suppression immédiate de l'authentification
-        if not request.session.get('indexeur_auth_token'):
-            return redirect('indexeur_login')
+    # def dispatch(self, request, *args, **kwargs):
+    #     # Vérification stricte + suppression immédiate de l'authentification
+    #     if not request.session.get('indexeur_auth_token'):
+    #         return redirect('indexeur_login')
         
-        # Supprimer le token immédiatement après vérification
-        token = request.session.pop('indexeur_auth_token', None)
-        if not token:
-            return redirect('indexeur_login')
+    #     # Supprimer le token immédiatement après vérification
+    #     token = request.session.pop('indexeur_auth_token', None)
+    #     if not token:
+    #         return redirect('indexeur_login')
             
-        return super().dispatch(request, *args, **kwargs)
+    #     return super().dispatch(request, *args, **kwargs)
     def post(self, request):
         formIndexeur = IndexeurContentForm(request.POST)
         if formIndexeur.is_valid():
@@ -153,17 +153,17 @@ class IndexationControlAuthView(View):
 class PriseVueProtectedView(View):
     template_name = 'priseVue.html'
     
-    def dispatch(self, request, *args, **kwargs):
-        # Vérification stricte + suppression immédiate de l'authentification
-        if not request.session.get('priseVue_auth_token'):
-            return redirect('priseVue_login')
+    # def dispatch(self, request, *args, **kwargs):
+    #     # Vérification stricte + suppression immédiate de l'authentification
+    #     if not request.session.get('priseVue_auth_token'):
+    #         return redirect('priseVue_login')
         
-        # Supprimer le token immédiatement après vérification
-        token = request.session.pop('priseVue_auth_token', None)
-        if not token:
-            return redirect('priseVue_login')
+    #     # Supprimer le token immédiatement après vérification
+    #     token = request.session.pop('priseVue_auth_token', None)
+    #     if not token:
+    #         return redirect('priseVue_login')
             
-        return super().dispatch(request, *args, **kwargs)
+    #     return super().dispatch(request, *args, **kwargs)
     def post(self, request):
         formPriseDeVueContentForm = PriseDeVueContentForm(request.POST)
         if formPriseDeVueContentForm.is_valid():
@@ -237,17 +237,17 @@ class PriseVueProtectedView(View):
 class IndexationControlProtectedView(View):
     template_name = 'indexationControl.html'
     
-    def dispatch(self, request, *args, **kwargs):
-        # Vérification stricte + suppression immédiate de l'authentification
-        if not request.session.get('indexationControl_auth_token'):
-            return redirect('indexationControl_login')
+    # def dispatch(self, request, *args, **kwargs):
+    #     # Vérification stricte + suppression immédiate de l'authentification
+    #     if not request.session.get('indexationControl_auth_token'):
+    #         return redirect('indexationControl_login')
         
-        # Supprimer le token immédiatement après vérification
-        token = request.session.pop('indexationControl_auth_token', None)
-        if not token:
-            return redirect('indexationControl_login')
+    #     # Supprimer le token immédiatement après vérification
+    #     token = request.session.pop('indexationControl_auth_token', None)
+    #     if not token:
+    #         return redirect('indexationControl_login')
             
-        return super().dispatch(request, *args, **kwargs)
+    #     return super().dispatch(request, *args, **kwargs)
     
     def get(self, request):
         # Initialisation des formulaires

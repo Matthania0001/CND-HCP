@@ -281,19 +281,19 @@
 
     <div class="collect-buttons">
         <button type="button" onclick="window.location.href='{% url 'collecte_login' %}'">
-            <i class="fas fa-book"></i> Collecte
-        </button>
-        <button type="button" onclick="window.location.href='{% url 'periodique_login' %}'">
-            <i class="fas fa-calendar-alt"></i> Periodique
+            <i class="fas fa-book"></i> Collecte des U.G
         </button>
         <button type="button" onclick="window.location.href='{% url 'monographie_login' %}'">
-            <i class="fas fa-book"></i> Monographie
+            <i class="fas fa-book"></i> Enregistrement d'une Unité Globale
+        </button>
+        <button type="button" onclick="window.location.href='{% url 'periodique_login' %}'">
+            <i class="fas fa-calendar-alt"></i> Enregistrement d'un Article
         </button>
     </div>
     
     <hr>
     
-    <h2>Enregistrement d'un periodique</h2>
+    <h2>Enregistrement d'un article </h2>
     
     <div class="search-section">
         <button type="button" onclick="window.location.href='{% url 'accueil' %}'">
@@ -638,9 +638,9 @@
         </form>
         <div class = "directSection">
             <div class = "buttonSection">
-                <h3> Enregistrer plutot en tant qu'un document Non périodique, UGP, UG ou Rapport </h3>
-                <button type="button" onclick="window.location.href='{% url 'monographie_protected' %}'">
-                    <i class="fas fa-calendar-alt"></i> Monographie
+                <h3> Ajouter un autre article pour:  <u>{{source_expeditrice}}</u> </h3>
+                <button type="button" onclick="window.location.href='{% url 'periodique_protected' %}'">
+                    <i class="fas fa-calendar-alt"></i> Ajouter un article
                 </button>
             </div>
         </div>

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Premier Formulaire</title>
+</head>
+<body>
+    <h1>Premier Formulaire</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Soumettre</button>
+    </form>
+</body>
+</html>

@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="{% static 'css/form.css' %}">
   <link rel="stylesheet" href="{% static 'css/search.css' %}">
   <link rel="stylesheet" href="{% static 'css/liste.css' %}">
+  <link rel="stylesheet" href="{% static 'css/direct.css' %}">
 {% endblock %}
     <div class="collect-section">
         <h2><i class="fas fa-clipboard-list"></i> Suivi </h2>
@@ -162,6 +163,14 @@
                         </button>
                 </div>
             </form>
+            <div class = "directSection">
+                <div class = "buttonSection">
+                    <h3> Passer à l'archivage </h3>
+                    <button type="button" onclick="window.location.href='{% url 'archivage' %}'">
+                        <i class="fas fa-calendar-alt"></i> Archiver
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

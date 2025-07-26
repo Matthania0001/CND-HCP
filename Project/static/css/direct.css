@@ -1,4 +1,4 @@
-.directSection {
+/* .directSection {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -62,6 +62,192 @@
   .directSection {
     flex-direction: column;
     padding: 15px;
+  }
+
+  .buttonSection {
+    flex: 1 1 100%;
+  }
+} */
+
+/* .directSection {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  gap: 24px;
+  margin: 40px auto;
+  padding: 24px;
+  max-width: 960px;
+  background: #f5f7fa;
+  border-radius: 16px;
+}
+
+.buttonSection {
+  flex: 1 1 min(280px, 45%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+  padding: 32px 20px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.buttonSection:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+}
+
+.buttonSection h3 {
+  font-size: 1.3rem;
+  margin-bottom: 20px;
+  color: #222;
+  font-weight: 700;
+}
+
+.buttonSection button {
+  background: var(--primary-gradient, linear-gradient(135deg, #4a90e2, #357abd));
+  color: #fff;
+  border: none;
+  padding: 14px 24px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.buttonSection button::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: skewX(-20deg);
+  transition: left 0.5s ease;
+}
+
+.buttonSection button:hover::after {
+  left: 200%;
+}
+
+.buttonSection button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 768px) {
+  .directSection {
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .buttonSection {
+    flex: 1 1 100%;
+  }
+} */
+
+.directSection {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  gap: 24px;
+  margin: 40px auto;
+  padding: 24px;
+  max-width: 960px;
+  background: #fafbfc;
+  border-radius: 20px;
+}
+
+.buttonSection {
+  position: relative;
+  flex: 1 1 min(300px, 45%);
+  overflow: hidden;
+  background: #fff;
+  border-radius: 16px;
+  padding: 30px 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  cursor: pointer;
+}
+
+.buttonSection::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, rgba(74,144,226,0.15), rgba(53,122,189,0.15), rgba(74,144,226,0.15));
+  transform: rotate(25deg);
+  transition: transform 0.7s ease;
+}
+
+.buttonSection:hover {
+  transform: perspective(800px) rotateX(2deg) rotateY(2deg) scale(1.03);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+}
+
+.buttonSection:hover::before {
+  transform: rotate(25deg) translate(20%, 20%);
+}
+
+.buttonSection h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #1a1a1a;
+}
+
+.buttonSection button {
+  position: relative;
+  overflow: hidden;
+  background: transparent;
+  border: none;
+  color: #357abd;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 14px 28px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.buttonSection button::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: #357abd;
+  bottom: 0;
+  left: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.buttonSection button:hover {
+  color: #4a90e2;
+}
+
+.buttonSection button:hover::after {
+  transform: scaleX(1);
+}
+
+@media (max-width: 768px) {
+  .directSection {
+    flex-direction: column;
+    padding: 20px;
   }
 
   .buttonSection {

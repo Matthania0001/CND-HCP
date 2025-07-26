@@ -139,11 +139,14 @@ class PeriodiqueProtectedView(View):
     def get(self, request):
         # Initialisation des formulaires
         formSearch = SearchForm(request.GET or None)
-        article_form = ArticlePeriodiqueForm()
-        
+        article_form = ArticlePeriodiqueForm(initial={
+            'titre': request.session.get('titre_document', ''),
+            'source_expeditrice': request.session.get('source', ''),
+        })
         context = {
             'formSearch': formSearch,
             'article_form': article_form,
+            'source_expeditrice' : request.session.get('source', '')
         }
         return render(request, self.template_name, context)
     def post(self, request):
@@ -361,7 +364,11 @@ class MonographieProtectedView(View):
 
     def get(self, request):
         formSearch = SearchForm(request.GET or None)
-        monographie_form = NonPeriodiqueForm()
+        monographie_form = NonPeriodiqueForm(initial={
+            'titre_article': request.session.get('titre_document', ''),
+            'source_expeditrice': request.session.get('source', ''),
+        })
+
         context = {
             'formSearch': formSearch,
             'monographie_form': monographie_form,
@@ -399,8 +406,8 @@ class MonographieProtectedView(View):
                 cursor.execute(
                     """
                     INSERT INTO doc_monographie (
-                        n_enregistrement, titre, pages, domaine, type, statut, n_periodique, lang, type_support, acces, id_acces_arabe, id_acces_etranger
-                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        n_enregistrement, titre, pages, domaine, type, statut, n_periodique, lang, type_support, acces, id_acces_arabe, id_acces_etranger, source
+                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     """,
                     [
                         monographie_form.cleaned_data['n_enregistrement'],
@@ -415,6 +422,7 @@ class MonographieProtectedView(View):
                         monographie_form.cleaned_data['acces'],
                         monographie_form.cleaned_data['id_acces_arabe'],
                         monographie_form.cleaned_data['id_acces_etranger'],
+                        monographie_form.cleaned_data['source_expeditrice'],
                     ]
                 )
 
@@ -446,31 +454,31 @@ class MonographieProtectedView(View):
                 )
 
                 # Insérer dans fournit
-                cursor.execute(
-                    """
-                    INSERT INTO fournit(source, n_enregistrement, date_reception, obligation)
-                    VALUES (%s, %s, %s, %s)
-                    """,
-                    [
-                        source_document,
-                        monographie_form.cleaned_data['n_enregistrement'],
-                        monographie_form.cleaned_data['date_reception'],
-                        monographie_form.cleaned_data['type_acquisition']
-                    ]
-                )
+                # cursor.execute(
+                #     """
+                #     INSERT INTO fournit(source, n_enregistrement, date_reception, obligation)
+                #     VALUES (%s, %s, %s, %s)
+                #     """,
+                #     [
+                #         source_document,
+                #         monographie_form.cleaned_data['n_enregistrement'],
+                #         monographie_form.cleaned_data['date_reception'],
+                #         monographie_form.cleaned_data['type_acquisition']
+                #     ]
+                # )
 
                 # Insérer dans collecte
-                cursor.execute(
-                    """
-                    INSERT INTO collecte(nomrc, n_enregistrement, datsaisi_c)
-                    VALUES (%s, %s, %s)
-                    """,
-                    [
-                        monographie_form.cleaned_data['responsable_saisie'],
-                        monographie_form.cleaned_data['n_enregistrement'],
-                        date.today()
-                    ]
-                )
+                # cursor.execute(
+                #     """
+                #     INSERT INTO collecte(nomrc, n_enregistrement, datsaisi_c)
+                #     VALUES (%s, %s, %s)
+                #     """,
+                #     [
+                #         monographie_form.cleaned_data['responsable_saisie'],
+                #         monographie_form.cleaned_data['n_enregistrement'],
+                #         date.today()
+                #     ]
+                # )
 
                 # Insérer dans doc_enregistre
                 cursor.execute(
@@ -1206,23 +1214,22 @@ class CollectDocView(View):
         formSearch = SearchForm(request.GET or None)
 
         if form_collection_doc.is_valid():
+            request.session['titre_document'] = form_collection_doc.cleaned_data['titre_document']
+            request.session['source'] = form_collection_doc.cleaned_data['source']
             try:
                 with connection.cursor() as cursor:
-                    n_enregistrement = form_collection_doc.cleaned_data['num']
                     cursor.execute(
                         """
                         INSERT INTO doc_collecte(
-                            n_enregistrement,
                             titre_document,
                             source_document,
                             support_document,
                             date_collecte,
                             statut
                         )
-                        VALUES (%s, %s, %s, %s, %s, %s)
+                        VALUES (%s, %s, %s, %s, %s)
                         """,
                         [
-                            n_enregistrement,
                             form_collection_doc.cleaned_data['titre_document'],
                             form_collection_doc.cleaned_data['source'],
                             form_collection_doc.cleaned_data['support'],

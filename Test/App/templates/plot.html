@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Plotly responsive</title></head>
+<body>
+  <h1>Mon graphique</h1>
+  <div class="plot-container">
+    {{ plot_div|safe }}
+  </div>
+</body>
+<style>
+.plot-container {
+  width: 100%;
+  max-width: 600px; /* ou ce que tu veux */
+  margin: auto;
+  /* Flexbox parent si tu as plusieurs graphiques */
+  display: flex;
+}
+ div .js-plotly-plot {
+  flex-grow: 1;   /* rend le graphique responsive dans flex */
+}
+</style>
+</html>

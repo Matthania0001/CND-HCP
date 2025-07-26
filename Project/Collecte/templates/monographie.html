@@ -13,18 +13,18 @@
 
     <div class="collect-buttons">
         <button type="button" onclick="window.location.href='{% url 'collecte_login' %}'">
-            <i class="fas fa-book"></i> Collecte
-        </button>
-        <button type="button" onclick="window.location.href='{% url 'periodique_login' %}'">
-            <i class="fas fa-calendar-alt"></i> Periodique
+            <i class="fas fa-book"></i> Collecte des U.G
         </button>
         <button type="button" onclick="window.location.href='{% url 'monographie_login' %}'">
-            <i class="fas fa-book"></i> Monographie
+            <i class="fas fa-book"></i>Enregistrement d'une Unité Globale
+        </button>
+        <button type="button" onclick="window.location.href='{% url 'periodique_login' %}'">
+            <i class="fas fa-calendar-alt"></i>Enregistrement d'un Article
         </button>
     </div>
     <hr>
     
-    <h2>Enregistrement d'une Monographie</h2>
+    <h2>Enregistrement d'une Unité Globale </h2>
     
     <div class="search-section">
         <button type="button" onclick="window.location.href='{% url 'accueil' %}'">
@@ -341,9 +341,15 @@
         </form>
         <div class = "directSection">
             <div class = "buttonSection">
-                <h3>Enregistrer plutot en tant qu'un document Periodique</h3>
+                <h3>Enregistrer les Articles Associés </h3>
                 <button type="button" onclick="window.location.href='{% url 'periodique_protected' %}'">
-                    <i class="fas fa-calendar-alt"></i> Periodique
+                    <i class="fas fa-calendar-alt"></i> Joindre un Article
+                </button>
+            </div>
+            <div class = "buttonSection">
+                <h3>Passer au Suivi </h3>
+                <button type="button" onclick="window.location.href='{% url 'priseVue_protected' %}'">
+                    <i class="fas fa-calendar-alt"></i> Suivi
                 </button>
             </div>
         </div>

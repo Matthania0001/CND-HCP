@@ -5,6 +5,7 @@
   <link rel="stylesheet" href="{% static 'css/collecte/collecte.css' %}">
   <link rel="stylesheet" href="{% static 'css/form.css' %}">
   <link rel="stylesheet" href="{% static 'css/search.css' %}">
+  <link rel="stylesheet" href="{% static 'css/direct.css' %}">
 {% endblock %}
     <div class="collect-section">
     <h2><i class="fas fa-clipboard-list"></i> Suivi </h2>
@@ -90,6 +91,14 @@
                         </button>
                 </div>
             </form>
+            <div class = "directSection">
+                <div class = "buttonSection">
+                    <h3>Affecter à Indexeur </h3>
+                    <button type="button" onclick="window.location.href='{% url 'indexeur_protected' %}'">
+                        <i class="fas fa-calendar-alt"></i> Affecter
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

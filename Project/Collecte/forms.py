@@ -245,16 +245,16 @@ from Main.models import Doc, Ecriture, Edition, Fournit, Collecte, Domaine, Sour
 
 class ArticlePeriodiqueForm(forms.Form):
     # Section 1: Informations de base
-    # n_enregistrement = forms.IntegerField(
-    #     label="N° Enregistrement",
-    #     help_text="/2023",
-    #     widget=forms.NumberInput(attrs={'class': 'form-input'})
-    # )
-    n_enregistrement = forms.ChoiceField(
-        label="N° d'enregistrement",
-        choices = [(num.n_enregistrement, num.n_enregistrement) for num in DocCollecte.objects.all() if num.statut == 'Collecté'],
-        widget=forms.Select(attrs={'class': 'form-input'})
+    n_enregistrement = forms.IntegerField(
+        label="N° Enregistrement",
+        help_text="/2023",
+        widget=forms.NumberInput(attrs={'class': 'form-input'})
     )
+    # n_enregistrement = forms.ChoiceField(
+    #     label="N° d'enregistrement",
+    #     choices = [(num.n_enregistrement, num.n_enregistrement) for num in DocCollecte.objects.all() if num.statut == 'Collecté'],
+    #     widget=forms.Select(attrs={'class': 'form-input'})
+    # )
     n_periodicite = forms.IntegerField(
         label="Nombre de périodicité",
         help_text="Saisir le nombre de periodicité",
@@ -281,12 +281,12 @@ class ArticlePeriodiqueForm(forms.Form):
         required=False,
         widget=forms.TextInput(attrs={'class': 'form-input'})
     )
-    # titre_article = forms.CharField(
-    #     label="Titre Article*",
-    #     max_length=200,
-    #     widget=forms.TextInput(attrs={'size': '100', 'class': 'form-input'}),
-    #     help_text="Extrait d'ouvrage collectif, Extrait d'acte de congrès, Extrait de périodique",
-    # )
+    titre_article = forms.CharField(
+        label="Titre Article*",
+        max_length=200,
+        widget=forms.TextInput(attrs={'size': '100', 'class': 'form-input'}),
+        help_text="Extrait d'ouvrage collectif, Extrait d'acte de congrès, Extrait de périodique",
+    )
     
     auteurs = forms.CharField(
         label="Auteur/Collectivité",
@@ -335,7 +335,7 @@ class ArticlePeriodiqueForm(forms.Form):
     )
     
     domaine = forms.ChoiceField(
-        choices=[(domaine.domaine, domaine.domaine) for domaine in Domaine.objects.all()],
+        choices=[('', '')] + [(domaine.domaine, domaine.domaine) for domaine in Domaine.objects.all()],
         label="Domaine",
         widget=forms.Select(attrs={'class': 'form-input'})
     )
@@ -348,17 +348,16 @@ class ArticlePeriodiqueForm(forms.Form):
     ]
     
     langue = forms.ChoiceField(
-        choices=LANGUE_CHOICES,
+        choices=[('', '')] + LANGUE_CHOICES,
         label="Langue",
         widget=forms.Select(attrs={'class': 'form-input'})
     )
     
-    # source_expeditrice = forms.ModelChoiceField(
-    #     queryset=Source.objects.all(),
-    #     label="Source Expéditrice",
-    #     to_field_name="source",
-    #     widget=forms.Select(attrs={'class': 'form-input'})
-    # )
+    source_expeditrice = forms.ChoiceField(
+        choices=[('', '')] + [(source.source, source.source) for source in Source.objects.all()],
+        label="Source Expéditrice",
+        widget=forms.Select(attrs={'class': 'form-input'})
+    )
     
     TYPE_ACQUISITION = [
     ('Achat', 'Achat'),
@@ -368,7 +367,7 @@ class ArticlePeriodiqueForm(forms.Form):
     ]
 
     type_acquisition = forms.ChoiceField(
-        choices=TYPE_ACQUISITION,
+        choices=[('', '')] + TYPE_ACQUISITION,
         label="Type d'acquisition",  # Correct (pas de correction nécessaire)
         widget=forms.Select(attrs={'class': 'form-input'})
     )
@@ -418,10 +417,15 @@ class ArticlePeriodiqueForm(forms.Form):
 
 class NonPeriodiqueForm(forms.Form):
     # Section 1: Informations de base
-    n_enregistrement = forms.ChoiceField(
-        label="N° d'enregistrement",
-        choices = [(num.n_enregistrement, num.n_enregistrement) for num in DocCollecte.objects.all() if num.statut == 'Collecté'],
-        widget=forms.Select(attrs={'class': 'form-input'})
+    # n_enregistrement = forms.ChoiceField(
+    #     label="N° d'enregistrement",
+    #     choices = [(num.n_enregistrement, num.n_enregistrement) for num in DocCollecte.objects.all() if num.statut == 'Collecté'],
+    #     widget=forms.Select(attrs={'class': 'form-input'})
+    # )
+    n_enregistrement = forms.IntegerField(
+        label="N° Enregistrement",
+        help_text="/2023",
+        widget=forms.NumberInput(attrs={'class': 'form-input'})
     )
     n_periodicite = forms.IntegerField(
         label="Nombre de périodicité",
@@ -429,12 +433,12 @@ class NonPeriodiqueForm(forms.Form):
         widget=forms.NumberInput(attrs={'class': 'form-input'})
     )
     
-    # titre_article = forms.CharField(
-    #     label="Titre du Document",
-    #     max_length=200,
-    #     widget=forms.TextInput(attrs={'size': '100', 'class': 'form-input'}),
-    #     help_text="Unité Générique, Non Périodique, Unité Globale Périodique, Rapport",
-    # )
+    titre_article = forms.CharField(
+        label="Titre du Document",
+        max_length=200,
+        widget=forms.TextInput(attrs={'size': '100', 'class': 'form-input'}),
+        help_text="Unité Générique, Non Périodique, Unité Globale Périodique, Rapport",
+    )
     
     auteurs = forms.CharField(
         label="Auteur/Collectivité",
@@ -492,13 +496,13 @@ class NonPeriodiqueForm(forms.Form):
     )
     
     domaine = forms.ChoiceField(
-        choices=[(domaine.domaine, domaine.domaine) for domaine in Domaine.objects.all()],
+        choices=[('', '')] + [(domaine.domaine, domaine.domaine) for domaine in Domaine.objects.all()],
         label="Domaine",
         widget=forms.Select(attrs={'class': 'form-input'})
     )
     type = forms.ChoiceField(
         label="Type de document",
-        choices=[
+        choices=[('', '')] + [
             ('np', 'Non Périodique'),
             ('p', 'Périodique'),
         ],
@@ -513,16 +517,16 @@ class NonPeriodiqueForm(forms.Form):
     ]
     
     langue = forms.ChoiceField(
-        choices=LANGUE_CHOICES,
+        choices=[('', '')]+LANGUE_CHOICES,
         label="Langue",
         widget=forms.Select(attrs={'class': 'form-input'})
     )
     
-    # source_expeditrice = forms.ChoiceField(
-    #     choices=[(source.source, source.source) for source in Source.objects.all()],
-    #     label="Source Expéditrice",
-    #     widget=forms.Select(attrs={'class': 'form-input'})
-    # )
+    source_expeditrice = forms.ChoiceField(
+        choices=[(source.source, source.source) for source in Source.objects.all()],
+        label="Source Expéditrice",
+        widget=forms.Select(attrs={'class': 'form-input'})
+    )
     
     TYPE_ACQUISITION = [
     ('Achat', 'Achat'),
@@ -532,7 +536,7 @@ class NonPeriodiqueForm(forms.Form):
     ]
 
     type_acquisition = forms.ChoiceField(
-        choices=TYPE_ACQUISITION,
+        choices=[('', '')] + TYPE_ACQUISITION,
         label="Type d'acquisition",  # Correct (pas de correction nécessaire)
         widget=forms.Select(attrs={'class': 'form-input'})
     )
@@ -872,11 +876,11 @@ class CollectDocForm(forms.Form):
     #     widget=forms.TextInput(attrs={'class': 'form-input'}),
     #     help_text="/2003"
     #)
-    num = forms.IntegerField(
-        label="N° Enregistrement",
-        help_text="/2023",
-        widget=forms.NumberInput(attrs={'class': 'form-input'})
-    )
+    # num = forms.IntegerField(
+    #     label="N° Enregistrement",
+    #     help_text="/2023",
+    #     widget=forms.NumberInput(attrs={'class': 'form-input'})
+    # )
     titre_document = forms.CharField(
         label="Titre du document",
         max_length=255,

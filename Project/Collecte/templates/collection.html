@@ -13,13 +13,13 @@
     <h2><i class="fas fa-database"></i> Collecte et Enregistrement </h2>
     <div class="collect-buttons">
         <button type="button" onclick="window.location.href='{% url 'collecte_login' %}'">
-            <i class="fas fa-book"></i> Collecte
-        </button>
-        <button type="button" onclick="window.location.href='{% url 'periodique_login' %}'">
-            <i class="fas fa-calendar-alt"></i> Periodique
+            <i class="fas fa-book"></i> Collecte des U.G
         </button>
         <button type="button" onclick="window.location.href='{% url 'monographie_protected' %}'">
-            <i class="fas fa-book"></i> Monographie
+            <i class="fas fa-book"></i>Enregistrement d'une Unité Globale
+        </button>
+        <button type="button" onclick="window.location.href='{% url 'periodique_login' %}'">
+            <i class="fas fa-calendar-alt"></i>Enregistrement d'un Article
         </button>
     </div>
     
@@ -132,17 +132,17 @@
         </form>
         <div class = "directSection">
             <div class = "buttonSection">
-                <h3>Enregistrer en tant qu'un document Periodique</h3>
-                <button type="button" onclick="window.location.href='{% url 'periodique_protected' %}'">
-                    <i class="fas fa-calendar-alt"></i> Periodique
-                </button>
-            </div>
-            <div class = "buttonSection">
-                <h3> Enregistrer en tant qu'un document Non périodique, UGP, UG ou Rapport </h3>
+                <h3> Si le document fera objet de traitement </h3>
                 <button type="button" onclick="window.location.href='{% url 'monographie_protected' %}'">
-                    <i class="fas fa-calendar-alt"></i> Monographie
+                    <i class="fas fa-calendar-alt"></i> A traiter
                 </button>
             </div>
+            {% comment %} <div class = "buttonSection">
+                <h3> Si le document ne fera pas objet de traitement </h3>
+                <button type="button" onclick="window.location.href='{% url 'monographie_protected' %}'">
+                    <i class="fas fa-calendar-alt"></i> A ne pas traiter
+                </button>
+            </div> {% endcomment %}
         </div>
     </div>
     <script>

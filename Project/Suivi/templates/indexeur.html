@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="{% static 'css/form.css' %}">
   <link rel="stylesheet" href="{% static 'css/search.css' %}">
   <link rel="stylesheet" href="{% static 'css/liste.css' %}">
+  <link rel="stylesheet" href="{% static 'css/direct.css' %}">
 {% endblock %}
 <div class="collect-section">
     <h2><i class="fas fa-clipboard-list"></i> Suivi </h2>
@@ -74,6 +75,14 @@
                     </button>
                 </div>
             </form>
+            <div class = "directSection">
+                <div class = "buttonSection">
+                    <h3>Passer à l'Indexation et au Controle </h3>
+                    <button type="button" onclick="window.location.href='{% url 'indexationControl_protected' %}'">
+                        <i class="fas fa-calendar-alt"></i> Indexation et Controle
+                    </button>
+                </div>
+            </div>
     </div>
 </div>
 <h2>Liste des indexeurs et nombre de documents</h2>
